@@ -218,3 +218,6 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+*.log
+T1Workspace/.metadata/.log
+*.snap
