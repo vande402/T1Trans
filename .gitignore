@@ -15,6 +15,10 @@ local.properties
 .classpath
 .settings/
 .loadpath
+*.log
+*.snap
+.index
+.prefs
 
 # External tool builders
 .externalToolBuilders/
@@ -214,3 +218,8 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+*.log
+T1Workspace/.metadata/.log
+*.snap
+*.markers
+*.txt
