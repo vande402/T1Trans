@@ -15,8 +15,8 @@ local.properties
 .classpath
 .settings/
 .loadpath
-.log
-.snap
+*.log
+*.snap
 .index
 .prefs
 
