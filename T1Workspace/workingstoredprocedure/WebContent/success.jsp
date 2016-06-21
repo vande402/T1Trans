@@ -21,9 +21,9 @@
 </head>
 <body>
 
-	Submit to run stored procudure
+	Submit to run stored procedure
 	<div id="keshav"></div>
-	<center>
+	<form>
 	
 	<button type="button" id="runPr" class="btn btn-success btn-lg">RUN</button>
 	
