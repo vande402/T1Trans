@@ -221,3 +221,4 @@ pip-log.txt
 *.log
 T1Workspace/.metadata/.log
 *.snap
+*.markers
