@@ -20,6 +20,7 @@ local.properties
 .index
 .prefs
 
+
 # External tool builders
 .externalToolBuilders/
 
@@ -223,3 +224,4 @@ T1Workspace/.metadata/.log
 *.snap
 *.markers
 *.txt
+
