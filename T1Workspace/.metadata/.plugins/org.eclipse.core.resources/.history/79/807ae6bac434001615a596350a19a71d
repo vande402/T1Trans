@@ -1,0 +1,642 @@
+package com.tutorialspoint.struts2.action;
+
+import java.io.File;
+import java.io.FileInputStream;
+
+import org.apache.catalina.connector.Request;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.struts2.ServletActionContext;
+import org.json.simple.JSONObject;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Iterator;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import com.opencsv.CSVReader;
+import com.opensymphony.xwork2.ActionSupport;
+import com.org.util.DBconnect;;
+
+
+
+
+public class uploadFile2_bk extends ActionSupport{
+   private File myFile;
+   private String myFileContentType;
+   private String myFileFileName;
+   private String destPath;
+   
+   
+   private HttpServletRequest servletRequest;
+   private static Connection  con= null;
+   
+	private Connection conn = null;
+	private PreparedStatement pstCheckExist = null;
+	private ResultSet resultset = null;
+	private Statement stmt1=null;
+	
+   public String execute()
+   {
+	   
+      /* Copy file to a safe location */
+	   destPath = "E:/OKKYOProject/OKKYOProject_14-08-2015_new/WebContent/imageUploads/";
+      
+      try{
+    	  System.out.println("-----uploadFile----");
+    	  con = DBconnect.getConnectionStatus();
+    	  
+    	  //String filePath = servletRequest.getSession().getServletContext().getRealPath("/");
+          //System.out.println("Server path:" + filePath);
+    	  
+    	 String kp = ServletActionContext.getRequest().getContextPath();
+    	  System.out.println("-----kp111s----"+kp);
+     	 System.out.println("Src File name: " + myFile);
+     	 System.out.println("Dst File name: " + myFileFileName);
+     	 System.out.println("-----keshav-------");
+     	 System.out.println("File Name is:"+getMyFileFileName());  
+     	 System.out.println("File Content Type is:"+getMyFileContentType()); 
+     	 System.out.println( File.separator );
+     	 
+     	FileInputStream file = new FileInputStream(myFile);
+     	//Create Workbook instance holding reference to .xlsx file
+     	System.out.println("new------------------%%%"+file);
+		XSSFWorkbook workbook = new XSSFWorkbook(file);
+
+		//Get first/desired sheet from the workbook
+		XSSFSheet sheet = workbook.getSheetAt(0);
+		int Count = 0;
+		String s1 = null ;
+		String sValue0 = null;
+		String sValue1 = null;
+		String sValue2 = null;
+		String sValue3 = null;
+		String sValue4 = null;
+		String sValue5 = null, sValue6 = null, sValue7 = null,sValue8 = null,sValue9 = null ,sValue10 = null,
+				sValue11 = null,sValue12 = null,sValue13 = null,sValue14 = null,sValue15 = null,sValue16 = null
+				,sValue17 = null,sValue18 = null,sValue19 = null,sValue20 = null,sValue21 = null;
+
+		
+        String query1 = "delete from try1;";
+    	System.out.println(query1);	        	
+    	pstCheckExist = con.prepareStatement(query1);	
+    	pstCheckExist.executeUpdate();
+    	
+    	String query2 = "delete from lindex;";
+    	System.out.println(query2);	        	
+    	pstCheckExist = con.prepareStatement(query2);	
+    	pstCheckExist.executeUpdate();
+    	
+    	
+    	
+		//Iterate through each rows one by one
+		Iterator<Row> rowIterator = sheet.iterator();
+		/*
+		while (rowIterator.hasNext()) 
+		{*/
+		
+		 for (Row row : sheet) {
+	            // avoid first row as it is header
+			 	// count first row cell no. 
+	            if (row.getRowNum() == 0) {
+	            	System.out.println("====NumberOfCells======"+row.getPhysicalNumberOfCells());
+	            }
+
+			 for (int count = 0; count < row.getLastCellNum(); count++) {
+	                Cell cell = row.getCell(count);
+	                System.out.println("cell==========="+cell);
+	               // whenever we get blank cell value, we avoid it and continues the loop
+	                if(count==0){
+		                if (cell == null) {
+		            	   sValue0 = "--";
+		                    continue;
+		               }}
+	                if(count==1){
+	                if (cell == null) {
+	            	   sValue1 = "--";
+	                    continue;
+	               }}
+	                if(count==2){
+		                if (cell == null) {
+		            	   sValue2 = "--";
+		                    continue;
+		               }}
+	                if(count==3){
+		                if (cell == null) {
+		            	   sValue3 = "--";
+		                    continue;
+		               }}
+	                if(count==4){
+		                if (cell == null) {
+		            	   sValue4 = "--";
+		                    continue;
+		               }}
+	                if(count==5){ if (cell == null) { sValue5 = "--"; continue;
+	                	}}
+	                if(count==6){ if (cell == null) { sValue6 = "--"; continue;
+                	}}
+	                if(count==7){ if (cell == null) { sValue7 = "--"; continue;
+                	}}
+	                if(count==8){ if (cell == null) { sValue8 = "--"; continue;
+                	}}
+	                if(count==9){ if (cell == null) { sValue9 = "--" ; continue;
+                	}}
+	                if(count==10){ if (cell == null) { sValue10 = "--"; continue;
+                	}}
+	                if(count==11){ if (cell == null) { sValue11 = "--"; continue;
+                	}}
+	                if(count==12){ if (cell == null) { sValue12 = "--"; continue;
+                	}}
+	                if(count==13){ if (cell == null) { sValue13 = "--"; continue;
+                	}}
+	                if(count==14){ if (cell == null) { sValue14 = "--"; continue;
+                	}}
+	                if(count==15){ if (cell == null) { sValue15 = "--"; continue;
+                	}}
+	                if(count==16){ if (cell == null) { sValue16 = "--"; continue;
+                	}}
+	                if(count==17){ if (cell == null) { sValue17 = "--"; continue;
+                	}}
+	                if(count==18){ if (cell == null) { sValue18 = "--"; continue;
+                	}}
+	                if(count==19){ if (cell == null) { sValue19 = "--"; continue;
+                	}}
+	                if(count==20){ if (cell == null) { sValue20 = "--"; continue;
+                	}}
+	                if(count==21){ if (cell == null) { sValue21 = "--"; continue;
+                	}}
+                
+                
+                
+	                
+			//For each row, iterate through all the columns
+			Iterator<Cell> cellIterator = row.cellIterator();
+//			System.out.println("------------ keshav --------");
+			
+
+				switch (cell.getCellType()) 
+				{
+					case Cell.CELL_TYPE_NUMERIC:
+						s1=Double.toString(cell.getNumericCellValue());
+						System.out.println("111--"+cell.getNumericCellValue() + "\t");
+						break;
+					case Cell.CELL_TYPE_STRING:
+						s1=cell.getStringCellValue();
+						System.out.println("222--"+cell.getStringCellValue() + "\t");
+						break;
+
+				}
+				
+				
+				if(count==0)
+					sValue0 = s1;
+				if(count==1)
+					sValue1 = s1;
+				if(count==2)
+					sValue2 = s1;
+				if(count==3)
+					sValue3 = s1;
+				if(count==4)
+					sValue4 = s1;
+				if(count==5)
+					sValue5 = s1;
+				if(count==6)
+					sValue6 = s1;
+				if(count==7)
+					sValue7 = s1;
+				if(count==8)
+					sValue8 = s1;
+				if(count==9)
+					sValue9 = s1;
+				if(count==10)
+					sValue10 = s1;
+				if(count==11)
+					sValue11 = s1;
+				if(count==12)
+					sValue12 = s1;
+				if(count==13)
+					sValue13 = s1;
+				if(count==14)
+					sValue14 = s1;
+				if(count==15)
+					sValue15 = s1;
+				if(count==16)
+					sValue16 = s1;
+				if(count==17)
+					sValue17 = s1;
+				if(count==18)
+					sValue18 = s1;
+				if(count==19)
+					sValue19 = s1;
+				if(count==20)
+					sValue20 = s1;
+				if(count==21)
+					sValue21 = s1;
+				
+					//System.out.println("==nul27"+sValue4);
+			
+				
+			}
+			
+			System.out.println("all valuse====="+sValue0+"-----"+sValue1+"---"+sValue2+"---"+sValue3+"---"+sValue4+"---"+sValue5+"--"+sValue6+"--"
+			+sValue7+"--"+sValue8+"--"+sValue9+"--"+sValue10+"--"+sValue11+"--"+sValue12+"--"+sValue13+"--"+sValue14+"--"
+			+sValue15+"--"+sValue16+"--"+sValue17+"--"+sValue18+"--"+sValue19+"--"+sValue20+"--"+sValue21+"--");
+			
+			if(row.getRowNum()!=1){
+			String query = "insert into try1 (A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,A11,A12,A13,A14,A15,A16,A17,A18,A19,A20,A21,A22)values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+        	System.out.println(query);	        	
+        	pstCheckExist = con.prepareStatement(query);            	
+        	pstCheckExist.setString(1, sValue0);
+        	pstCheckExist.setString(2, sValue1);
+        	pstCheckExist.setString(3, sValue2);
+        	pstCheckExist.setString(4, sValue3);
+        	pstCheckExist.setString(5, sValue4);
+        	pstCheckExist.setString(6, sValue5);
+        	pstCheckExist.setString(7, sValue6);
+        	pstCheckExist.setString(8, sValue7);
+        	pstCheckExist.setString(9, sValue8);
+        	pstCheckExist.setString(10, sValue9);
+        	pstCheckExist.setString(11, sValue10);
+        	pstCheckExist.setString(12, sValue11);
+        	pstCheckExist.setString(13, sValue12);
+        	pstCheckExist.setString(14, sValue13);
+        	pstCheckExist.setString(15, sValue14);pstCheckExist.setString(16, sValue15);pstCheckExist.setString(17, sValue16);
+        	pstCheckExist.setString(18, sValue17);pstCheckExist.setString(19, sValue18);pstCheckExist.setString(20, sValue19);
+        	pstCheckExist.setString(21, sValue20);pstCheckExist.setString(22, sValue21);
+        
+        	pstCheckExist.executeUpdate();
+			}
+			if(row.getRowNum()==1){
+				
+				query2 ="select id from title";
+
+				 String tID = null ;      	
+	        	
+	        	
+	        	stmt1=con.createStatement();
+		    	ResultSet rs = stmt1.executeQuery(query2);
+		    	
+		    	while(rs.next())
+		        {
+
+		    		tID = rs.getString("id");
+		        }
+		    	
+		    	
+		    	String query = " update title set A16='"+sValue0+"',A17='"+sValue1+"',A18='"+sValue2+"',A19='"+sValue3+"',A20='"+sValue4+"',A21='"+sValue5+"'," +
+						" A22='"+sValue6+"', A23='"+sValue7+"',A24='"+sValue8+"',A25='"+sValue9+"',A26='"+sValue10+"',A27='"+sValue11+"',A28='"+sValue12+"'," +
+						" A29='"+sValue13+"',A30='"+sValue14+"', A31='"+sValue15+"',A32='"+sValue16+"',A33='"+sValue17+"',A34='"+sValue18+"',A35='"+sValue19+"'," +
+						" A36='"+sValue20+"',A37='"+sValue21+"' where id = "+tID+";";
+	        	System.out.println(query);	 
+		    	
+		    	
+	        
+	        //	resultset = stmt1.executeQuery(query);
+	        	pstCheckExist = con.prepareStatement(query);	
+		    	pstCheckExist.executeUpdate();
+				}
+			
+			
+			
+			System.out.println("");
+		}
+			
+	    	
+	    	 String queryv = "update try1 set A15 = CONCAT(A15,' ' ,A16) , A18 = concat(A18, ' ', A19);";
+		    	System.out.println(queryv);	        	
+		    	pstCheckExist = con.prepareStatement(queryv);	
+		    	pstCheckExist.executeUpdate();
+		 
+		file.close();
+     	//FilesUtil.saveFile(getMyFile(),getMyFileFileName(),kp+File.separator+getMyFileContentType());
+      }catch(Exception e){
+         e.printStackTrace();
+         return ERROR;
+      }
+System.out.println("rohitis grat programer ");
+      return SUCCESS;
+   }
+   
+   public String original(){
+	   
+
+	   
+	      /* Copy file to a safe location */
+		   destPath = "E:/OKKYOProject/OKKYOProject_14-08-2015_new/WebContent/imageUploads/";
+	      
+	      try{
+	    	  System.out.println("-----uploadFile----");
+	    	  con = DBconnect.getConnectionStatus();
+	    	  
+	    	  //String filePath = servletRequest.getSession().getServletContext().getRealPath("/");
+	          //System.out.println("Server path:" + filePath);
+	    	  
+	    	 String kp = ServletActionContext.getRequest().getContextPath();
+	    	  System.out.println("-----kp111s----"+kp);
+	     	 System.out.println("Src File name: " + myFile);
+	     	 System.out.println("Dst File name: " + myFileFileName);
+	     	 System.out.println("-----keshav-------");
+	     	 System.out.println("File Name is:"+getMyFileFileName());  
+	     	 System.out.println("File Content Type is:"+getMyFileContentType()); 
+	     	 System.out.println( File.separator );
+	     	 
+	     	FileInputStream file = new FileInputStream(myFile);
+	     	//Create Workbook instance holding reference to .xlsx file
+	     	System.out.println("new------------------%%%"+file);
+			XSSFWorkbook workbook = new XSSFWorkbook(file);
+
+			//Get first/desired sheet from the workbook
+			XSSFSheet sheet = workbook.getSheetAt(0);
+			int Count = 0;
+			String s1 = null ;
+			String sValue0 = null;
+			String sValue1 = null;
+			String sValue2 = null;
+			String sValue3 = null;
+			String sValue4 = null;
+			String sValue5 = null, sValue6 = null, sValue7 = null,sValue8 = null,sValue9 = null ,sValue10 = null,
+					sValue11 = null,sValue12 = null,sValue13 = null,sValue14 = null,sValue15 = null;
+
+			
+	        
+	    	String query2 = "delete from original;";
+	    	System.out.println(query2);	        	
+	    	pstCheckExist = con.prepareStatement(query2);	
+	    	pstCheckExist.executeUpdate();
+	    	
+	    	String query3 = "delete from title;";
+	    	System.out.println(query3);	        	
+	    	pstCheckExist = con.prepareStatement(query3);	
+	    	pstCheckExist.executeUpdate();
+	    	
+	    	
+			//Iterate through each rows one by one
+			Iterator<Row> rowIterator = sheet.iterator();
+			/*
+			while (rowIterator.hasNext()) 
+			{*/
+			
+			 for (Row row : sheet) {
+		            // avoid first row as it is header
+				 	// count first row cell no. 
+		            if (row.getRowNum() == 0) {
+		            	System.out.println("====NumberOfCells======"+row.getPhysicalNumberOfCells());
+		            }
+
+				 for (int count = 0; count < row.getLastCellNum(); count++) {
+		                Cell cell = row.getCell(count);
+		                System.out.println("row.getRowNum()-------"+row.getRowNum());
+		                System.out.println("cell==========="+cell);
+		               // whenever we get blank cell value, we avoid it and continues the loop
+		                if(count==0){
+			                if (cell == null) {
+			            	   sValue0 = "--";
+			                    continue;
+			               }}
+		                if(count==1){
+		                if (cell == null) {
+		            	   sValue1 = "--";
+		                    continue;
+		               }}
+		                if(count==2){
+			                if (cell == null) {
+			            	   sValue2 = "--";
+			                    continue;
+			               }}
+		                if(count==3){
+			                if (cell == null) {
+			            	   sValue3 = "--";
+			                    continue;
+			               }}
+		                if(count==4){
+			                if (cell == null) {
+			            	   sValue4 = "--";
+			                    continue;
+			               }}
+		                if(count==5){ if (cell == null) { sValue5 = "--"; continue;
+		                	}}
+		                if(count==6){ if (cell == null) { sValue6 = "--"; continue;
+	                	}}
+		                if(count==7){ if (cell == null) { sValue7 = "--"; continue;
+	                	}}
+		                if(count==8){ if (cell == null) { sValue8 = "--"; continue;
+	                	}}
+		                if(count==9){ if (cell == null) { sValue9 = "--" ; continue;
+	                	}}
+		                if(count==10){ if (cell == null) { sValue10 = "--"; continue;
+	                	}}
+		                if(count==11){ if (cell == null) { sValue11 = "--"; continue;
+	                	}}
+		                if(count==12){ if (cell == null) { sValue12 = "--"; continue;
+	                	}}
+		                if(count==13){ if (cell == null) { sValue13 = "--"; continue;
+	                	}}
+		                if(count==14){ if (cell == null) { sValue14 = "--"; continue;
+	                	}}
+		                if(count==15){ if (cell == null) { sValue15 = "--"; continue;
+	                	}}
+		              
+	                
+		                
+				//For each row, iterate through all the columns
+				Iterator<Cell> cellIterator = row.cellIterator();
+//				System.out.println("------------ keshav --------");
+				
+
+					switch (cell.getCellType()) 
+					{
+						case Cell.CELL_TYPE_NUMERIC:
+							s1=Double.toString(cell.getNumericCellValue());
+							System.out.println("111--"+cell.getNumericCellValue() + "\t");
+							break;
+						case Cell.CELL_TYPE_STRING:
+							s1=cell.getStringCellValue();
+							System.out.println("222--"+cell.getStringCellValue() + "\t");
+							break;
+
+					}
+					
+					
+					if(count==0)
+						sValue0 = s1;
+					if(count==1)
+						sValue1 = s1;
+					if(count==2)
+						sValue2 = s1;
+					if(count==3)
+						sValue3 = s1;
+					if(count==4)
+						sValue4 = s1;
+					if(count==5)
+						sValue5 = s1;
+					if(count==6)
+						sValue6 = s1;
+					if(count==7)
+						sValue7 = s1;
+					if(count==8)
+						sValue8 = s1;
+					if(count==9)
+						sValue9 = s1;
+					if(count==10)
+						sValue10 = s1;
+					if(count==11)
+						sValue11 = s1;
+					if(count==12)
+						sValue12 = s1;
+					if(count==13)
+						sValue13 = s1;
+					if(count==14)
+						sValue14 = s1;
+					if(count==15)
+						sValue15 = s1;
+					
+						//System.out.println("==nul27"+sValue4);
+				
+					
+				}
+				
+				System.out.println("all valuse====="+sValue0+"-----"+sValue1+"---"+sValue2+"---"+sValue3+"---"+sValue4+"---"+sValue5+"--"+sValue6+"--"
+				+sValue7+"--"+sValue8+"--"+sValue9+"--"+sValue10+"--"+sValue11+"--"+sValue12+"--"+sValue13+"--"+sValue14+"--"
+				+sValue15+"--");
+				
+				if(row.getRowNum()!=0){
+				String query = "insert into original (A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,A11,A12,A13,A14,A15)values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+	        	System.out.println(query);	        	
+	        	pstCheckExist = con.prepareStatement(query);            	
+	        	pstCheckExist.setString(1, sValue0);
+	        	pstCheckExist.setString(2, sValue1);
+	        	pstCheckExist.setString(3, sValue2);
+	        	pstCheckExist.setString(4, sValue3);
+	        	pstCheckExist.setString(5, sValue4);
+	        	pstCheckExist.setString(6, sValue5);
+	        	pstCheckExist.setString(7, sValue6);
+	        	pstCheckExist.setString(8, sValue7);
+	        	pstCheckExist.setString(9, sValue8);
+	        	pstCheckExist.setString(10, sValue9);
+	        	pstCheckExist.setString(11, sValue10);
+	        	pstCheckExist.setString(12, sValue11);
+	        	pstCheckExist.setString(13, sValue12);
+	        	pstCheckExist.setString(14, sValue13);
+	        	pstCheckExist.setString(15, sValue14);
+	        	
+	        	
+	        	pstCheckExist.executeUpdate();
+				}
+				if(row.getRowNum()==1){
+					String query = "insert into title (A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,A11,A12,A13,A14,A15)values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+		        	System.out.println(query);	        	
+		        	pstCheckExist = con.prepareStatement(query);            	
+		        	pstCheckExist.setString(1, sValue0);
+		        	pstCheckExist.setString(2, sValue1);
+		        	pstCheckExist.setString(3, sValue2);
+		        	pstCheckExist.setString(4, sValue3);
+		        	pstCheckExist.setString(5, sValue4);
+		        	pstCheckExist.setString(6, sValue5);
+		        	pstCheckExist.setString(7, sValue6);
+		        	pstCheckExist.setString(8, sValue7);
+		        	pstCheckExist.setString(9, sValue8);
+		        	pstCheckExist.setString(10, sValue9);
+		        	pstCheckExist.setString(11, sValue10);
+		        	pstCheckExist.setString(12, sValue11);
+		        	pstCheckExist.setString(13, sValue12);
+		        	pstCheckExist.setString(14, sValue13);
+		        	pstCheckExist.setString(15, sValue14);
+		        	
+		        	
+		        	pstCheckExist.executeUpdate();
+					}
+					
+				
+				System.out.println("");
+			}
+			 
+			 String queryx = "update original set A1 = CONCAT(A1,' ' ,A2) , A4 = concat(A4, ' ', A5);";
+		    	System.out.println(queryx);	        	
+		    	pstCheckExist = con.prepareStatement(queryx);	
+		    	pstCheckExist.executeUpdate();
+		    
+			 
+			file.close();
+	     	//FilesUtil.saveFile(getMyFile(),getMyFileFileName(),kp+File.separator+getMyFileContentType());
+	      }catch(Exception e){
+	         e.printStackTrace();
+	         return ERROR;
+	      }
+	System.out.println("rohitis grat programer ");
+	      return SUCCESS;
+	   
+	   
+	   
+	   
+   }
+   
+   
+   public String insertJoinTable(){
+	   
+	
+	   try {
+	   
+		   con = DBconnect.getConnectionStatus();
+	HttpSession httpSession = null;
+	HttpServletRequest request = null;
+	request= ServletActionContext.getRequest();
+	
+	String DeleteFinalUploadFile = "delete from merg;";
+	System.out.println(DeleteFinalUploadFile);	        	
+	pstCheckExist = con.prepareStatement(DeleteFinalUploadFile);	
+	pstCheckExist.executeUpdate();
+	
+	
+    String query = "insert into merg (A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,A11,A12,A13,A14,A15,A16,A17,A18,"+
+"A19,A20,A21,A22,A23,A24,A25,A26,A27,A28,A29,A30,A31,A32,A33,A34,A35,"+
+"A36,A37,A38,A39,A40,A41,A42,A43,A44,A45,A46,A47,A48,A49,A50)SELECT o.A1 as A1 ,o.A2 as A2,o.A3 as A3,"+
+"o.A4 as A4, o.A5 as A5, o.A6 as A6, o.A7 as A7 ,o.A8 as A8,o.A9 as A9,o.A10 as A10, o.A11 as A11,"+
+ "o.A12 as A12,o.A13 as A13 ,o.A14 as A14,o.A15 as A15,t.A1 as A16, t.A2 as A17, t.A3 as A18,t.A4 as A19 ,"+
+ "t.A5 as A20,t.A6 as A21,t.A7 as A22,t.A8 as A23 ,t.A9 as A24,t.A10 as A25,t.A11 as A26,"+
+ "t.A12 as A27,t.A13 as A28, t.A14 as A29 ,t.A15 as A30,t.A16 as A31,t.A17 as A32,t.A18 as A33,"+
+" t.A19 as A34,t.A20 as A35 ,t.A21 as A36,t.A22 as A37 , l.A1 as A38 ,l.A2 as A39,l.A3 as A40,"+
+"l.A4 as A41, l.A5 as A42, l.A6 as A43, l.A7 as A44 ,l.A8 as A45,l.A9 as A46,l.A10 as A47, l.A11 as A48,"+
+ "l.A12 as A49,l.A13 as A50   FROM original o left join try1 t on t.A15 = o.A1 and  t.A18 = o.A4 left join "+
+ "lindex l on o.A1 = l.A2 and o.A4 = l.A3;";
+    pstCheckExist = con.prepareStatement(query);	
+	pstCheckExist.executeUpdate();
+	
+    //STEP 5: Extract data from result se
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	   
+	   return SUCCESS;
+   }
+   
+   public File getMyFile() {
+      return myFile;
+   }
+   public void setMyFile(File myFile) {
+      this.myFile = myFile;
+   }
+   public String getMyFileContentType() {
+      return myFileContentType;
+   }
+   public void setMyFileContentType(String myFileContentType) {
+      this.myFileContentType = myFileContentType;
+   }
+   public String getMyFileFileName() {
+      return myFileFileName;
+   }
+   public void setMyFileFileName(String myFileFileName) {
+      this.myFileFileName = myFileFileName;
+   }
+   
+   public void setServletRequest(HttpServletRequest servletRequest) {
+      this.servletRequest = servletRequest;
+
+   }
+}

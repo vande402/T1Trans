@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- $Id: TcoreCobTypes.xsd 18067 2014-06-17 16:17:31Z ericw $ --><!-- Best viewed with fixed-width (e.g., Courier) font --><xs:schema xmlns:cobtypes="http://www.tcore.com/TcoreCobTypes.xsd" xmlns:dobtypes="http://www.tcore.com/TcoreDobTypes.xsd" xmlns:cwtypes="http://www.tcore.com/TcoreCarrierWatchTypes.xsd" xmlns:types="http://www.tcore.com/TcoreTypes.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.tcore.com/TcoreCobTypes.xsd" elementFormDefault="qualified">
+
+    <xs:import namespace="http://www.tcore.com/TcoreTypes.xsd" schemaLocation="TcoreTypes.xsd"/>
+    <xs:import namespace="http://www.tcore.com/TcoreCarrierWatchTypes.xsd" schemaLocation="TcoreCarrierWatchTypes.xsd"/>
+    <xs:import namespace="http://www.tcore.com/TcoreDobTypes.xsd" schemaLocation="TcoreDobTypes.xsd"/>
+    <xs:annotation>
+        <xs:documentation>
+            <h2>Tcore Carrier-On-Boarding XML Schema</h2>
+            <br/>
+            This schema defines the types used by Carrier-On-Boarding.  
+            <br/>
+            Published:  November, 2011<br/>
+            Version  :  1.0.0<br/>
+            <br/>
+            <i>Copyright (C) 2011, TransCore LP, All Rights Reserved.</i>
+            <br/>
+            <br/>
+            <br/>
+        </xs:documentation>
+    </xs:annotation>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="CobCustomer">
+        <xs:annotation>
+            <xs:documentation>
+                The attributes that identify a COB Customer.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="cobId" type="types:String40" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="accountId" type="types:PositiveInt" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="companyId" type="types:PositiveInt" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="name" type="types:String50" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="email" type="types:EmailAddress" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="domain" type="types:String256" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="ftpDirectory" type="types:String20" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="subscriptionType" type="types:String20" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="isSubscriptionActive" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="isW9Required" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="usesWebService" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="notifyOnProfileUpdate" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="notifyOnContractSubmission" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="notifyOnW9Update" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="notifyOnInsuranceAgentChange" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="notifyOnAttachmentChange" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Contract">
+        <xs:annotation>
+            <xs:documentation>
+                The attributes that identify a COB Customer's contract.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="cobId" type="types:String40" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The COB Id of the signature object not the contract object.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="pdfId" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Only provided if the broker uses AssureSign.  This is the id used 
+                        to create the URL that displays the signed document.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="contractName" type="types:String100" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="contractVersion" type="types:PositiveInt" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="signatory" type="types:String100" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The name of the person who signed the contract.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="title" type="types:String100" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The title of the person who signed the contract.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="signed" type="xs:dateTime" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The date and time the document was signed.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Carrier">
+        <xs:annotation>
+            <xs:documentation>
+                The attributes that identify a carrier.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="cobId" type="types:String40" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="carrierId" type="cobtypes:CarrierIdentifier" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="physicalAddress" type="cobtypes:Location" minOccurs="1" maxOccurs="1"/>
+            <xs:choice>
+                <xs:element name="mailingAddress" type="cobtypes:Location"/>
+                <xs:element name="sameAsPhysicalAddress" type="xs:boolean"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="CobBrokerUser">
+        <xs:annotation>
+            <xs:documentation>
+                The attributes that identify a broker user of COB.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="cobId" type="types:String40" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="firstName" type="types:String40" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="lastName" type="types:String40" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="phone" type="types:PhoneNumber" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="email" type="types:EmailAddress" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="CobCarrierUser">
+        <xs:annotation>
+            <xs:documentation>
+                The attributes that identify a carrier user of COB.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="cobId" type="types:String40" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="firstName" type="types:String40" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="lastName" type="types:String40" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="phone" type="types:PhoneNumber" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="email" type="types:EmailAddress" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="CarrierIdentifier">
+        <xs:annotation>
+            <xs:documentation>
+                The attributes that identify a carrier.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="legalName" type="types:String155" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="dbaName" type="types:String155" minOccurs="0" maxOccurs="1"/>
+            <xs:choice>
+                <xs:element name="interstateCarrier" type="cobtypes:InterstateId"/>
+                <xs:element name="intrastateCarrier" type="cobtypes:IntrastateId"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="InterstateId">
+        <xs:annotation>
+            <xs:documentation>
+                The attributes that identify an interstate carrier.  Must include DOT number, docket, or both.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="dotNumber" type="types:NonNegativeInt" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="docket" type="cwtypes:DocketType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="IntrastateId">
+        <xs:annotation>
+            <xs:documentation>
+                The attributes that identify an intrastate carrier.  Must include intrastate number.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="dotNumber" type="types:NonNegativeInt" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="intrastate" type="cwtypes:IntrastateType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Location">
+        <xs:sequence>
+            <xs:element name="tollFreePhone" type="types:PhoneNumber" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Best available toll free phone number corresponding to the address.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="phone" type="types:PhoneNumber" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Best available phone number corresponding to the address.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="fax" type="types:PhoneNumber" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Best available Fax number corresponding to the address.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="street" type="types:String200"/>
+            <xs:element name="city" type="types:String50"/>
+            <xs:element name="stateProvince" type="types:StateProvince" minOccurs="1"/>
+            <xs:element name="postalCode" type="types:PostalCodePattern" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="InsuranceInfo">
+        <xs:annotation>
+            <xs:documentation>
+                A carrier's insurance information.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="agent" type="dobtypes:InsuranceAgent" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="nonCurrentCertificate" type="cobtypes:NonCurrentCertificate" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="NonCurrentCertificate">
+        <xs:annotation>
+            <xs:documentation>
+                Any certificate URL that the carrier has indicated is not current.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="coverageType" type="dobtypes:CoverageTypes" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="certificateURL" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Attachment">
+        <xs:annotation>
+            <xs:documentation>
+                A carrier document that has either been added or deleted.  Usually validation of capabilities of the carrier like Hazmat, smartway, or 
+                CTPAT certificates.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="action" type="cobtypes:ActionTypes" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The action that was taken "ADDED" or "DELETED".
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="cobId" type="types:String40" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="documentType" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="fileName" type="types:String100" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="documentName" type="types:String100" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="description" type="types:String100" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="ActionTypes">
+        <xs:annotation>
+            <xs:documentation>
+                The different action types that a document might have.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ADDED"/>
+            <xs:enumeration value="DELETED"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

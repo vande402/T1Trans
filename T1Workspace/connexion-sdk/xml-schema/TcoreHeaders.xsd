@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- $Id: TcoreHeaders.xsd 6845 2008-01-18 23:58:16Z aarond $ --><xs:schema xmlns:headers="http://www.tcore.com/TcoreHeaders.xsd" xmlns:types="http://www.tcore.com/TcoreTypes.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" targetNamespace="http://www.tcore.com/TcoreHeaders.xsd" elementFormDefault="qualified">
+    <xs:annotation>
+        <xs:documentation>
+            <h2>TcoreHeaders Schema</h2>
+            This schema defines the headers used within the SOAP messages.
+            <br/><br/>
+            Published:  June, 2004 <br/>
+            Version  :  1.0.1 <br/>
+            <p/>
+            <i> Copyright (C) 2004, TransCore LP  All Rights Reserved.</i>
+        </xs:documentation>
+    </xs:annotation>
+    
+    <xs:import namespace="http://www.tcore.com/TcoreTypes.xsd" schemaLocation="TcoreTypes.xsd"/>
+    <xs:import namespace="http://schemas.xmlsoap.org/soap/envelope/" schemaLocation="soap-envelope.xsd"/>
+
+    <xs:element name="applicationHeader" type="headers:ApplicationHeader"/>
+    <xs:element name="correlationHeader" type="headers:CorrelationHeader"/>
+    <xs:element name="sessionHeader" type="headers:SessionHeader"/>
+    <xs:element name="warningHeader" type="headers:WarningHeader"/>
+    <xs:element name="versionHeader" type="headers:VersionHeader"/>
+    <xs:element name="compressionHeader" type="headers:CompressionHeader"/>
+
+    <xs:complexType name="ApplicationHeader">
+        <xs:sequence>
+            <xs:element name="application" type="types:SourceApplication"/>
+            <!-- I chose not to force a 4-part pattern here so as to be more relaxed with our clients -->
+            <xs:element name="applicationVersion" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute ref="soapenv:mustUnderstand" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="VersionHeader">
+        <xs:sequence>
+            <xs:element name="serviceVersion" type="types:FourPartVersionNumber"/>
+        </xs:sequence>
+        <xs:attribute ref="soapenv:mustUnderstand" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="CorrelationHeader">
+        <xs:sequence>
+            <xs:element name="Id" type="types:String32" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute ref="soapenv:mustUnderstand" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="WarningHeader">
+        <xs:sequence>
+            <xs:element ref="headers:responseTimeExceeded" minOccurs="0" maxOccurs="1"/>
+            <xs:element ref="headers:modifiedRequests" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="headers:unfulfilledRequests" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ServiceWarning"/>
+
+    <xs:element name="serviceWarning" type="headers:ServiceWarning"/>
+    <xs:element name="responseTimeExceeded" type="headers:ResponseTimeExceeded" substitutionGroup="headers:serviceWarning"/>
+    <xs:element name="modifiedRequests" type="headers:ModifiedRequest" substitutionGroup="headers:serviceWarning"/>
+    <xs:element name="unfulfilledRequests" type="headers:UnfulfilledRequest" substitutionGroup="headers:serviceWarning"/>
+
+    <xs:complexType name="ResponseTimeExceeded">
+        <xs:annotation>
+            <xs:documentation>
+                The service could not respond to the client with a response in a timely manner.
+                The response returned will be empty but the client can use the responseTicket to obtain the
+                response from the service at a later time.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="headers:ServiceWarning">
+                <xs:sequence>
+                    <xs:element name="responseTickets" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ModifiedRequest">
+        <xs:annotation>
+            <xs:documentation>
+                The request that was recieved was modified by the service on your behalf.
+                This could happen if the request contained something illegal or not immediately understood by
+                the service but the service could determine what was intended and the request was modified
+                before being processed.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="headers:ServiceWarning">
+                <xs:sequence>
+                    <xs:annotation>
+                        <xs:documentation>
+                            The part of the request that was modified.
+                        </xs:documentation>
+                    </xs:annotation>
+                    <xs:element name="property" type="xs:string"/>
+                    <xs:element name="oldvalue" type="xs:string"/>
+                    <xs:element name="newvalue" type="xs:string"/>
+                    <xs:element name="reason" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="UnfulfilledRequest">
+        <xs:annotation>
+            <xs:documentation>
+                The service could not fulfill the request for some or all of the items in
+                the request. The list of items that could not be fulfilled are provided. The unfulfilled
+                requests will NOT be processed any further.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="headers:ServiceWarning">
+                <xs:sequence>
+                    <xs:element name="unfulfilledRequestId" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Some unique (within the request) identifier for the unfulfilled request part.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="reason" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The reason that the request part could not be fulfilled.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SessionHeader">
+        <xs:sequence>
+            <xs:element name="sessionToken" type="types:SessionToken"/>
+        </xs:sequence>
+        <xs:attribute ref="soapenv:mustUnderstand" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="CompressionHeader">
+        <xs:sequence>
+            <xs:element name="contentEncoding" type="headers:Encoding"/>
+            <xs:element name="acceptEncoding" type="headers:Encoding" minOccurs="0"/> 
+        </xs:sequence>
+        <xs:attribute ref="soapenv:mustUnderstand" use="optional"/>
+    </xs:complexType>
+
+    <xs:simpleType name="Encoding">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="none"/>
+            <xs:enumeration value="gzip"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:element name="compressedContent" type="xs:base64Binary"/>
+</xs:schema>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- $Id: TcoreMessage.xsd 3478 2005-08-03 23:00:51Z aarond $ --><!-- Best viewed in fixed font (e.g., Courier) and landscape --><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:message="http://www.tcore.com/TcoreMessage.xsd" targetNamespace="http://www.tcore.com/TcoreMessage.xsd" elementFormDefault="qualified">
+    <xs:annotation>
+        <xs:documentation> 
+            <h2>TcoreMessage Schema</h2> This schema defines the 
+            foundational messaging conventions for external APIs. 
+            <br/><br/> 
+            Published:  June, 2004 <br/>
+            Version  :  1.0.1 <br/>
+            <p/>
+            <i> Copyright (C) 2004, TransCore LP  All Rights Reserved.</i>
+        </xs:documentation>
+    </xs:annotation>
+    <xs:element name="request" type="message:Request">
+        <xs:annotation>
+            <xs:documentation>
+                Here, we define an element using the Request 
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="response" type="message:Response">
+        <xs:annotation>
+            <xs:documentation>
+                Here, we define an abstract element using the Response
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:complexType name="Request">
+        <xs:annotation>
+            <xs:documentation>
+                The base type for a request
+            </xs:documentation>
+        </xs:annotation>
+    </xs:complexType>
+    <xs:complexType name="Response">
+        <xs:annotation>
+            <xs:documentation>
+                The base type for a response
+            </xs:documentation>
+        </xs:annotation>
+    </xs:complexType>
+</xs:schema>

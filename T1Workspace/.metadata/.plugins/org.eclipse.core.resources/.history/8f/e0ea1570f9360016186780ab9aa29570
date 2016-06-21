@@ -1,0 +1,11 @@
+driver1=com.microsoft.sqlserver.jdbc.SQLServerDriver
+url1 = jdbc:sqlserver://192.168.0.231;database=test;
+user1 = scubeadmin
+password1 = admin@123
+
+
+driver = com.mysql.jdbc.Driver
+url = jdbc:mysql://127.0.0.1:3307/test
+user = root
+password = secret_root_password
+

@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tfmi="http://www.tcore.com/TfmiCob.xsd"
+                  xmlns:tfmiwsdl="http://www.tcore.com/TfmiCob.wsdl"
+                  xmlns:types="http://www.tcore.com/TcoreTypes.xsd"
+                  xmlns:headers="http://www.tcore.com/TcoreHeaders.xsd"
+                  xmlns:carrierWatchTypes="http://www.tcore.com/TcoreCarrierWatchTypes.xsd"
+                  xmlns:message="http://www.tcore.com/TcoreMessage.xsd"
+                  xmlns:tcobTypes="http://www.tcore.com/TcoreCobTypes.xsd"
+                  xmlns:tdobTypes="http://www.tcore.com/TcoreDobTypes.xsd"
+                  targetNamespace="http://www.tcore.com/TfmiCob.wsdl">
+   <wsdl:types>
+      <xs:schema>
+         <xs:import namespace="http://www.tcore.com/TfmiCob.xsd" schemaLocation="TfmiCob.xsd"/>
+         <xs:import namespace="http://www.tcore.com/TcoreHeaders.xsd"
+                    schemaLocation="TcoreHeaders.xsd"/>
+      </xs:schema>
+   </wsdl:types>
+   <wsdl:message name="applicationHeader">
+      <wsdl:part name="applicationHeader" element="headers:applicationHeader"/>
+   </wsdl:message>
+   <wsdl:message name="correlationHeader">
+      <wsdl:part name="correlationHeader" element="headers:correlationHeader"/>
+   </wsdl:message>
+   <wsdl:message name="sessionHeader">
+      <wsdl:part name="sessionHeader" element="headers:sessionHeader"/>
+   </wsdl:message>
+   <wsdl:message name="warningHeader">
+      <wsdl:part name="warningHeader" element="headers:warningHeader"/>
+   </wsdl:message>
+   <wsdl:message name="versionHeader">
+      <wsdl:part name="versionHeader" element="headers:versionHeader"/>
+   </wsdl:message>
+   <wsdl:message name="createCarrierRequest">
+      <wsdl:part name="request" element="tfmi:createCarrierRequest"/>
+   </wsdl:message>
+   <wsdl:message name="createCarrierResponse">
+      <wsdl:part name="response" element="tfmi:createCarrierResponse"/>
+   </wsdl:message>
+   <wsdl:message name="updateCarrierProfileRequest">
+      <wsdl:part name="request" element="tfmi:updateCarrierProfileRequest"/>
+   </wsdl:message>
+   <wsdl:message name="updateCarrierProfileResponse">
+      <wsdl:part name="response" element="tfmi:updateCarrierProfileResponse"/>
+   </wsdl:message>
+   <wsdl:message name="updateCarrierInsuranceInfoRequest">
+      <wsdl:part name="request" element="tfmi:updateCarrierInsuranceInfoRequest"/>
+   </wsdl:message>
+   <wsdl:message name="updateCarrierInsuranceInfoResponse">
+      <wsdl:part name="response" element="tfmi:updateCarrierInsuranceInfoResponse"/>
+   </wsdl:message>
+   <wsdl:message name="sendSignedContractToCustomerRequest">
+      <wsdl:part name="request" element="tfmi:sendSignedContractToCustomerRequest"/>
+   </wsdl:message>
+   <wsdl:message name="sendSignedContractToCustomerResponse">
+      <wsdl:part name="response" element="tfmi:sendSignedContractToCustomerResponse"/>
+   </wsdl:message>
+   <wsdl:message name="updateCarrierW9Request">
+      <wsdl:part name="request" element="tfmi:updateCarrierW9Request"/>
+   </wsdl:message>
+   <wsdl:message name="updateCarrierW9Response">
+      <wsdl:part name="response" element="tfmi:updateCarrierW9Response"/>
+   </wsdl:message>
+   <wsdl:message name="getCarrierDetailViewUrlRequest">
+      <wsdl:part name="request" element="tfmi:getCarrierDetailViewUrlRequest"/>
+   </wsdl:message>
+   <wsdl:message name="getCarrierDetailViewUrlResponse">
+      <wsdl:part name="response" element="tfmi:getCarrierDetailViewUrlResponse"/>
+   </wsdl:message>
+   <wsdl:message name="updateAttachmentRequest">
+      <wsdl:part name="request" element="tfmi:updateAttachmentRequest"/>
+   </wsdl:message>
+   <wsdl:message name="updateAttachmentResponse">
+      <wsdl:part name="response" element="tfmi:updateAttachmentResponse"/>
+   </wsdl:message>
+   <wsdl:message name="getCarrierWatchWarningLevelRequest">
+      <wsdl:part name="request" element="tfmi:getCarrierWatchWarningLevelRequest"/>
+   </wsdl:message>
+   <wsdl:message name="getCarrierWatchWarningLevelResponse">
+      <wsdl:part name="response" element="tfmi:getCarrierWatchWarningLevelResponse"/>
+   </wsdl:message>
+   <wsdl:portType name="TfmiCobPortType">
+      <wsdl:operation name="CreateCarrier">
+         <wsdl:input message="tfmiwsdl:createCarrierRequest"/>
+         <wsdl:output message="tfmiwsdl:createCarrierResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="UpdateCarrierProfile">
+         <wsdl:input message="tfmiwsdl:updateCarrierProfileRequest"/>
+         <wsdl:output message="tfmiwsdl:updateCarrierProfileResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="UpdateCarrierInsuranceInfo">
+         <wsdl:input message="tfmiwsdl:updateCarrierInsuranceInfoRequest"/>
+         <wsdl:output message="tfmiwsdl:updateCarrierInsuranceInfoResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="SendSignedContractToCustomer">
+         <wsdl:input message="tfmiwsdl:sendSignedContractToCustomerRequest"/>
+         <wsdl:output message="tfmiwsdl:sendSignedContractToCustomerResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="UpdateCarrierW9">
+         <wsdl:input message="tfmiwsdl:updateCarrierW9Request"/>
+         <wsdl:output message="tfmiwsdl:updateCarrierW9Response"/>
+      </wsdl:operation>
+      <wsdl:operation name="GetCarrierDetailViewUrl">
+         <wsdl:input message="tfmiwsdl:getCarrierDetailViewUrlRequest"/>
+         <wsdl:output message="tfmiwsdl:getCarrierDetailViewUrlResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="UpdateAttachment">
+         <wsdl:input message="tfmiwsdl:updateAttachmentRequest"/>
+         <wsdl:output message="tfmiwsdl:updateAttachmentResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="GetCarrierWatchWarningLevel">
+         <wsdl:input message="tfmiwsdl:getCarrierWatchWarningLevelRequest"/>
+         <wsdl:output message="tfmiwsdl:getCarrierWatchWarningLevelResponse"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:binding name="TfmiCobSoapBinding" type="tfmiwsdl:TfmiCobPortType">
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="CreateCarrier">
+         <soap:operation soapAction="/CreateCarrier" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="UpdateCarrierProfile">
+         <soap:operation soapAction="/UpdateCarrierProfile" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="UpdateCarrierInsuranceInfo">
+         <soap:operation soapAction="/UpdateCarrierInsuranceInfo" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="SendSignedContractToCustomer">
+         <soap:operation soapAction="/SendSignedContractToCustomer" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="UpdateCarrierW9">
+         <soap:operation soapAction="/UpdateCarrierW9" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="GetCarrierDetailViewUrl">
+         <soap:operation soapAction="/GetCarrierDetailViewUrl" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="UpdateAttachment">
+         <soap:operation soapAction="/UpdateAttachment" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="GetCarrierWatchWarningLevel">
+         <soap:operation soapAction="/GetCarrierWatchWarningLevel" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   <wsdl:service name="TfmiCobService">
+      <wsdl:port name="TfmiCobService" binding="tfmiwsdl:TfmiCobSoapBinding">
+         <soap:address location="http://208.64.206.159:9280/TfmiRequest"/>
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>

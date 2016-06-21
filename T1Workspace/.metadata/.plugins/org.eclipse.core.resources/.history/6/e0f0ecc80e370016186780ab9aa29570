@@ -1,0 +1,23 @@
+# Server URL
+url=http://208.64.206.159:9280/TfmiRequest
+
+# LoginIds and passwords
+loginId1=loginid1
+password1=password1
+loginId2=loginid2
+password2=password2
+loginDob=dobqa1
+passwordDob=password
+
+# Alarm match properties
+path=/AlarmMatch
+port=8080
+
+# Lookup Rates properties
+origin=Chicago,IL
+destination=Atlanta,GA
+
+# Dob properties
+dobCarrierExampleCarrierId=eaa9fd88-2dcc-41f4-9bbf-1b98dac783bf
+dobCarrierExampleSinceDate=2012-01-23 00:06:00
+dobCarrierExampleSinceDateFormat=yyyy-MM-DD HH:mm:ss

@@ -1,0 +1,1956 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- $Id: TcoreRates.xsd 11838 2011-07-13 23:58:33Z timd $ --><xs:schema xmlns:tfmirates="http://www.tcore.com/TfmiRates.xsd" xmlns:tfmi="http://www.tcore.com/TfmiFreightMatching.xsd" xmlns:headers="http://www.tcore.com/TcoreHeaders.xsd" xmlns:message="http://www.tcore.com/TcoreMessage.xsd" xmlns:types="http://www.tcore.com/TcoreTypes.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.tcore.com/TfmiRates.xsd" elementFormDefault="qualified">
+    <!-- -->
+    <!-- -->
+    <xs:annotation>
+        <xs:documentation>
+            <h2>Contract and Spot Market Rate Schema</h2>
+            This schema defines the external API for the TransCore
+            Contract and
+            Spot Market Rates
+            Service.
+            <br/>
+            <i>Copyright (C) 2010-2011, TransCore LP, All Rights
+                Reserved.</i>
+            <br/>
+            <br/>
+            <br/>
+        </xs:documentation>
+    </xs:annotation>
+    <!-- -->
+    <!-- -->
+    <xs:import namespace="http://www.tcore.com/TcoreTypes.xsd" schemaLocation="TcoreTypes.xsd"/>
+    <xs:import namespace="http://www.tcore.com/TcoreMessage.xsd" schemaLocation="TcoreMessage.xsd"/>
+    <xs:import namespace="http://www.tcore.com/TcoreHeaders.xsd" schemaLocation="TcoreHeaders.xsd"/>
+    <xs:import namespace="http://www.tcore.com/TfmiFreightMatching.xsd" schemaLocation="TfmiFreightMatching.xsd"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- ====================================================================================== -->
+    <!-- -->
+    <!-- Current Lane Rate -->
+    <!-- -->
+    <!-- ====================================================================================== -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupRateRequest">
+        <xs:annotation>
+            <xs:documentation>
+                Request spot-market and/or contract rate information for a lane, including 
+                estimated rate, range,  and a numeric representation of TransCore's 
+                confidence in that estimate.<br/>
+                <br/>
+                Each rate requested will be credited against the pool of lookups associated with 
+                the user's Truckload Rate Index subscription.<br/>
+                <br/>
+                Note that multiple LookupRateOperations can be submitted in a single 
+                LookupRateRequest, in batches of up to 50. If you need to request more than 50 
+                lanes, please submit batches sequentially.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="message:Request">
+                <xs:sequence>
+                    <xs:element name="lookupRateOperations" type="tfmirates:LookupRateOperation" maxOccurs="50"/>                
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupRateRequest" type="tfmirates:LookupRateRequest" substitutionGroup="message:request"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupRateOperation">
+        <xs:complexContent>
+            <xs:extension base="types:Operation">
+                <xs:sequence>
+                    <xs:element name="equipment" type="tfmirates:RateEquipmentCategory">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Rates deal with broader groups of equipment than EquipmentTypes or 
+                                EquipmentClasses used in Freight Matching, so the set of equipment
+                                categories is much smaller. 
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="origin" type="tfmi:Place">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The origin of the lane, specified using any of the standard  
+                                Connexion methods for describing locations.<br/>
+                                <br/>
+                                The choice of location specification method is generally less 
+                                important for rating than for freight matching. We offer a
+                                variety of methods purely for convenience, but the method chosen
+                                will have no effect on rating accuracy.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="destination" type="tfmi:Place">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The destination of the lane. See the description of 'origin' above 
+                                for further details.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="includeSpotRate" type="xs:boolean" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                If true, the response will include TransCore's spot rate estimate 
+                                for the specified lane. This allows the requester to compare his 
+                                rate with the spot market rate.<br/>
+                                <br/>
+                                Normally defaults to false if omitted. However, if 
+                                <code>includeContractRate</code> is false or omitted, this element 
+                                defaults to true - i.e., if neither <code>includeSpotRate</code> or
+                                <code>includeContractRate</code> is specified, the request is 
+                                assumed to be for spot rate information. Additionally, if 
+                                <code>includeMyRate</code> is true, the response will include the 
+                                market spot rate estimate.<br/>
+                                <br/>
+                                If the requester is not authorized to lookup spot rate 
+                                information, an error will be returned.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="includeContractRate" type="xs:boolean" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                If true, the response will include a contract rate estimate for 
+                                the specified lane.<br/>
+                                <br/>
+                                Defaults to false.<br/>
+                                <br/>
+                                If the requester is not authorized to lookup contract rate 
+                                information, an error will be returned.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="includeMyRate" type="xs:boolean" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                If true, the response will include the requester's spot rate 
+                                information for the specified lane. This allows the requester 
+                                to compare their company's own rate with the overall spot 
+                                market rate. Note that this element implies 
+                                <code>includeSpotRate</code> as well. If <code>includeMyRate</code>
+                                is true, the spot rate estimate will be returned as well.<br/>
+                                <br/>
+                                If the requester is not a lane rate data contributor, this element
+                                will be ignored.<br/>
+                                <br/>
+                                Defaults to false.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupRateOperations" type="tfmirates:LookupRateOperation" substitutionGroup="types:operations"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupRateResponse">
+        <xs:complexContent>
+            <xs:extension base="message:Response">
+                <xs:sequence>
+                    <xs:element ref="tfmirates:lookupRateResults" minOccurs="0" maxOccurs="50"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupRateResponse" type="tfmirates:LookupRateResponse" substitutionGroup="message:response"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupRateResult">
+        <xs:complexContent>
+            <xs:extension base="types:Result">
+                <xs:sequence>
+                    <xs:choice>
+                        <xs:element ref="tfmirates:lookupRateSuccessData"/>
+                        <xs:element ref="types:serviceError"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupRateResults" type="tfmirates:LookupRateResult" substitutionGroup="types:results"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupRateSuccessData">
+        <xs:annotation>
+            <xs:documentation>
+                The response will contain at least 1 of the following, and possibly more (depending
+                on the 'include' flags specified in the request.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="types:SuccessData">
+                <xs:sequence>
+                    <xs:element name="spotRate" type="tfmirates:CurrentSpotRateReport" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The spot market rate is returned if the 
+                                <code>includeSpotRate</code> flag was specified on the request, 
+                                or if no <code>includeContractRate</code> was false (i.e., by 
+                                default, spot rate is returned, if no rate type was requested).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="yourRate" type="tfmirates:ContributorsSpotRateReport" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                An estimate of the requester's own rate, derived from their 
+                                historical rate contributions.<br/>
+                                <br/>
+                                The requester's rate is only returned if: 
+                                1) The requester asked for it (via 
+                                   LookupRateOperation.includeMyRate) and
+                                2) The requester is a contributor (i.e., belongs to a company which 
+                                   contributes rates to TransCore) and
+                                3) The requester's company has contributed enough data for the 
+                                   requested lane.<br/>
+                                <br/>
+                                If the requester is not a contributor, no error is returned 
+                                (this element is simply omitted).<br/>
+                                <br/>
+                                The requester's rate will be based on the same lane as that used to 
+                                generate the current rate, i.e., <code>spotRate.ratedLane</code>.<br/>
+                                <br/>
+                                Note that TransCore will may estimate a contributor's rate based 
+                                on fewer rate contributions than the minimum required for a 
+                                market-rate estimate. In some cases, the low, average, and high 
+                                estimates may be identical.  
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="contractRate" type="tfmirates:CurrentContractRateReport" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The contract market rate is returned if the 
+                                <code>includeContractRate</code> flag was specified on the request.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="miles" type="types:NonNegativeInt" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The road mileage between the origin and destination points. 
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupRateSuccessData" type="tfmirates:LookupRateSuccessData" substitutionGroup="types:data"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="SpotRateReport">
+        <xs:sequence>
+            <xs:element name="estimatedLinehaulRate" type="xs:float">
+                <xs:annotation>
+                    <xs:documentation>
+                        The estimated per-mile rate.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="lowLinehaulRate" type="xs:float">
+                <xs:annotation>
+                    <xs:documentation>
+                        The low end of TransCore's estimated per-mile rate range. In general,
+                        this is the rate defining the lowest quartile of rates.  
+                        25% of rate contributions in the lane fall below this rate.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="highLinehaulRate" type="xs:float">
+                <xs:annotation>
+                    <xs:documentation>
+                        The high end of TransCore's estimated per-mile rate range. In general,
+                        this is the rate defining the upper quartile of rates.
+                        25% of rate contributions fall above this rate.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="estimatedLinehaulTotal" type="xs:float">
+                <xs:annotation>
+                    <xs:documentation>
+                        The estimated linehaul total. Note in general this will not equal 
+                        <code>estimatedLinehaulRate</code> x <code>mileage</code>. The estimated 
+                        total is obtained by averaging total rates in the lane for trips with 
+                        similar mileage. The LinehaulTotal is generally more appropriate to use 
+                        for short trips where minimums and hourly costs are more important than 
+                        mileage in determining rates.<br/>
+                        <br/>
+                        The per mile total is obtained by averaging per mile rates in the lane 
+                        for trips with similar mileage. Per mile is more appropriate for long 
+                        haul rates where per mile costs are most important in setting rates.  
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="lowLinehaulTotal" type="xs:float">
+                <xs:annotation>
+                    <xs:documentation>
+                        The low end of TransCore's estimated total rate range. In general, 
+                        this can be taken as the lower end of an approximately 50% confidence 
+                        interval (although it may not always reflect an exact statistical 
+                        confidence interval).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="highLinehaulTotal" type="xs:float">
+                <xs:annotation>
+                    <xs:documentation>
+                        The high end of TransCore's estimated per-mile rate range. In general, 
+                        this can be taken as the upper end of an approximately 50% confidence 
+                        interval (although it may not always reflect an exact statistical 
+                        confidence interval).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="confidenceLevel">
+                <xs:annotation>
+                    <xs:documentation>
+                        A quantitative description of TransCore's confidence in the rate estimate
+                        provided. It ranges from 1 (highest) to 100 (lowest).<br/>
+                        <br/>
+                        This confidence is primarily derived from the amount of relevant data 
+                        incorporated into the rate estimate. The confidence level incorporates
+                        factors such as:
+                        <ul>
+                            <li>The number of recent rate submissions on the requested lane or on 
+                                closely related lanes.</li>
+                            <li>The size of the geographic areas TransCore used to estimate the 
+                                rate (e.g. postal prefix, market area, region).</li>
+                            <li>The size of confidence intervals around the estimated rate (e.g.,
+                                the size of a 95% confidence interval, or of the (approximate) 
+                                50% confidence range described above).</li>
+                        </ul> 
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:int">
+                        <xs:minInclusive value="1"/>
+                        <xs:maxInclusive value="100"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="CurrentSpotRateReport">
+        <xs:complexContent>
+            <xs:extension base="tfmirates:SpotRateReport">
+                <xs:sequence>
+                    <xs:element name="ratedLane" type="tfmirates:RatedLane">
+                        <xs:annotation>
+                            <xs:documentation>
+                                This is the lane that was actually used to compute the rate. It 
+                                will denote the geographic region in which the requested origin 
+                                and destination fall.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="averageFuelSurchargeRate" type="xs:float">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Average per-mile fuel surcharge for the lane, from the 
+                                Department of Energy.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="contributors" type="types:NonNegativeInt" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The number of individual contributors to the lane data that were 
+                                used to compute the rate. This element is provided as an 
+                                additional means for a user to evaluate the significance of the 
+                                rate estimate, but may be removed in the future as TransCore's 
+                                rating algorithms evolve  to utilize data from outside specific 
+                                market areas and to incorporate long-term patterns.<br/>
+                                <br/>
+                                
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="moves" type="types:NonNegativeInt" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The number of moves (i.e., contributed lane data) that were used 
+                                to compute the rate. This element is provided as an additional 
+                                means for a user to evaluate the significance of the rate 
+                                estimate, but may be removed in the future as TransCore's rating 
+                                algorithms evolve to utilize data from outside specific market 
+                                areas and to incorporate long-term patterns.   
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="daysBack" type="types:NonNegativeInt" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The time period over which the rate was calculated. This element 
+                                is provided as an additional means for a user to evaluate the 
+                                significance of the rate estimate, but may be removed in the 
+                                future as TransCore's rating algorithms evolve to utilize data 
+                                from outside specific market areas and to incorporate long-term 
+                                patterns.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="ContributorsSpotRateReport">
+        <xs:annotation>
+            <xs:documentation>
+                An estimate of a contributor's own rate for a requested lane, based on historical 
+                rates from the contributor's own data. Note that the calculations used for several 
+                of the contained fields differ from those used to estimate spot-market rates.  
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tfmirates:SpotRateReport">
+                <xs:sequence>
+                    <xs:element name="ratedLane" type="tfmirates:RatedLane">
+                        <xs:annotation>
+                            <xs:documentation>
+                                This is the lane that was actually used to compute the rate. It 
+                                will denote the geographic region in which the requested origin 
+                                and destination fall.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="moves" type="types:NonNegativeInt" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The number of moves (i.e., contributed lane data) that were used 
+                                to compute the rate. This element is provided as an additional 
+                                means for a user to evaluate the significance of the rate 
+                                estimate, but may be removed in the future as TransCore's rating 
+                                algorithms evolve to utilize data from outside specific market 
+                                areas and to incorporate long-term patterns.   
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="daysBack" type="types:NonNegativeInt" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The time period over which the rate was calculated. This element 
+                                is provided as an additional means for a user to evaluate the 
+                                significance of the rate estimate, but may be removed in the 
+                                future as TransCore's rating algorithms evolve to utilize data 
+                                from outside specific market areas and to incorporate long-term 
+                                patterns.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="RatedLane">
+        <xs:sequence>
+            <xs:element name="originGeography" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        A human-readable description of the origin area used to compute the rate
+                        estimate. E.g., '982 Postal Code', 'Houston Market Area', 
+                        'Western Canada'.<br/>
+                        <br/>
+                        This element is provided as an additional means for a  user to evaluate 
+                        the significance of the rate estimate, but may be removed
+                        in the future as TransCore's rating algorithms evolve  to utilize data 
+                        from outside specific market areas and to incorporate long-term 
+                        patterns.<br/>
+                        <br/>
+		                Note: Rate providers generally do not compute lane rates based on
+                        point-to-point rates, but rather on geographical areas that contain the 
+                        requested points. This lane may differ from the requested point-to-point 
+                        lane because of how the rate provider associates postal codes with cities
+                        (especially for suburban neighborhoods in larger urban areas) or due to 
+                        city name abbreviation standards.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="destinationGeography" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        A human-readable description of the destination area used to compute the 
+                        rate estimate. See <code>originGeography</code>.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="ContractRateReport">
+        <xs:sequence>
+            <xs:element name="estimatedLinehaulRate" type="xs:float">
+                <xs:annotation>
+                    <xs:documentation>
+                        The estimated linehaul rate.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="lowLinehaulRate" type="xs:float">
+                <xs:annotation>
+                    <xs:documentation>
+                        The low end of the contract-rate provider's estimated linehaul rate 
+                        range.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="highLinehaulRate" type="xs:float">
+                <xs:annotation>
+                    <xs:documentation>
+                        The high end of the contract-rate provider's estimated linehaul rate 
+                        range. 
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="CurrentContractRateReport">
+        <xs:complexContent>
+            <xs:extension base="tfmirates:ContractRateReport">
+		        <xs:sequence>
+		            <xs:element name="ratedLane" type="tfmirates:RatedLane">
+		                <xs:annotation>
+		                    <xs:documentation>
+                                This is the lane that was actually used to compute the rate. It 
+                                will denote the geographic region in which the requested origin 
+                                and destination fall.
+		                    </xs:documentation>
+		                </xs:annotation>
+		            </xs:element>
+                    <xs:element name="averageFuelSurchargeRate" type="xs:float">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Average per-mile fuel surcharge for the lane.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="averageAccessorialCharge" type="xs:float">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Average accessorial charge for the lane.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="contributors" type="types:NonNegativeInt" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The number of individual contributors to the lane data that were 
+                                used to compute the rate. This element is provided as an 
+                                additional means for a user to evaluate the significance of the 
+                                rate estimate.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="moves" type="types:NonNegativeInt" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The number of moves (i.e., contributed lane data) that were used to 
+                                compute the rate. This element is provided as an additional means 
+                                for a user to evaluate the significance of the rate estimate.   
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+		        </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- ====================================================================================== -->
+    <!-- -->
+    <!-- Historic Spot Rates -->
+    <!-- -->
+    <!-- ====================================================================================== -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupHistoricSpotRatesRequest">
+        <xs:annotation>
+            <xs:documentation>
+                Requests spot rate estimates for a lane over the past 13 months. Each rate 
+                returned will be credited against the pool of lookups associated with the 
+                user's Truckload Rate Index Subscription.   
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="message:Request">
+                <xs:sequence>
+                    <xs:element name="lookupHistoricSpotRatesOperation" type="tfmirates:LookupHistoricSpotRatesOperation"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupHistoricSpotRatesRequest" type="tfmirates:LookupHistoricSpotRatesRequest" substitutionGroup="message:request"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupHistoricSpotRatesOperation">
+        <xs:complexContent>
+            <xs:extension base="tfmirates:LookupHistoricRatesOperation"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupHistoricRatesOperation">
+        <xs:complexContent>
+            <xs:extension base="types:Operation">
+                <xs:sequence>
+                    <xs:element name="equipment" type="tfmirates:RateEquipmentCategory">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Rates deal with broader groups of equipment than EquipmentTypes or 
+                                EquipmentClasses used in Freight Matching, so the set of equipment
+                                categories is much smaller. 
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="origin" type="tfmi:Place">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The origin of the lane.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="destination" type="tfmi:Place">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The destination of the lane. 
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupHistoricSpotRatesOperation" type="tfmirates:LookupHistoricSpotRatesOperation" substitutionGroup="types:operations"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupHistoricSpotRatesResponse">
+        <xs:complexContent>
+            <xs:extension base="message:Response">
+                <xs:sequence>
+                    <xs:element ref="tfmirates:lookupHistoricSpotRatesResult" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupHistoricSpotRatesResponse" type="tfmirates:LookupHistoricSpotRatesResponse" substitutionGroup="message:response"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupHistoricSpotRatesResult">
+        <xs:complexContent>
+            <xs:extension base="types:Result">
+                <xs:sequence>
+                    <xs:choice>
+                        <xs:element ref="tfmirates:lookupHistoricSpotRatesSuccessData"/>
+                        <xs:element ref="types:serviceError"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupHistoricSpotRatesResult" type="tfmirates:LookupHistoricSpotRatesResult" substitutionGroup="types:results"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupHistoricSpotRatesSuccessData">
+        <xs:complexContent>
+            <xs:extension base="types:SuccessData">
+                <xs:sequence>
+                    <xs:element name="ratedLane" type="tfmirates:RatedLane">
+                        <xs:annotation>
+                            <xs:documentation>
+                                This is the lane that was actually used to compute the rate. It will
+                                denote the geographic region in which the requested origin and 
+                                destination fall.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="monthlyReport" type="tfmirates:HistoricSpotRateReport" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Monthly rate reports for the requested lane. Returned in 
+                                chronological ascending order. Only those months for which rate 
+                                data is available will be returned, so there may be gaps.<br/>
+                                <br/>
+                                The most recent completed month is the last month returned (if 
+                                sufficient data is available for that month). E.g., at any time 
+                                in June, the monthly summary for May is the most recent summary 
+                                available.<br/>
+                                <br/>
+                                If necessary, TransCore's rate estimation algorithms will use 
+                                expanded geographic regions to obtain a statistically meaningful 
+                                sample. The geographic region will be expanded until rates are 
+                                available for 75% of the requested months. All monthly reports 
+                                will reflect the same geographic expansion level. 
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupHistoricSpotRatesSuccessData" type="tfmirates:LookupHistoricSpotRatesSuccessData" substitutionGroup="types:data"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="HistoricSpotRateReport">
+        <xs:complexContent>
+            <xs:extension base="tfmirates:SpotRateReport">
+                <xs:sequence>
+                    <xs:element name="when" type="types:YearMonth"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- ====================================================================================== -->
+    <!-- -->
+    <!-- Supporting Types -->
+    <!-- -->
+    <!-- ====================================================================================== -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="FuelCostSource">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="DoeCurrent"/>
+            <xs:enumeration value="DoeHistorical"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- ====================================================================================== -->
+    <!-- -->
+    <!-- Contract Historic Lanes and Rates -->
+    <!-- -->
+    <!-- ====================================================================================== -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupHistoricContractRatesRequest">
+        <xs:annotation>
+            <xs:documentation>
+                Requests contract rate estimates for a lane and national average rates over the 
+                past 13 months. Each rate returned will be credited against the pool of lookups 
+                associated with the user's Truckload Rate Index Subscription.   
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="message:Request">
+                <xs:sequence>
+                    <xs:element ref="tfmirates:lookupHistoricContractRatesOperation"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupHistoricContractRatesRequest" type="tfmirates:LookupHistoricContractRatesRequest" substitutionGroup="message:request"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupHistoricContractRatesOperation">
+        <xs:complexContent>
+            <xs:extension base="tfmirates:LookupHistoricRatesOperation"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupHistoricContractRatesOperation" type="tfmirates:LookupHistoricContractRatesOperation" substitutionGroup="types:operations"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupHistoricContractRatesResponse">
+        <xs:complexContent>
+            <xs:extension base="message:Response">
+                <xs:sequence>
+                    <xs:element ref="tfmirates:lookupHistoricContractRatesResult" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupHistoricContractRatesResponse" type="tfmirates:LookupHistoricContractRatesResponse" substitutionGroup="message:response"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupHistoricContractRatesResult">
+        <xs:complexContent>
+            <xs:extension base="types:Result">
+                <xs:sequence>
+                    <xs:choice>
+                        <xs:element ref="tfmirates:lookupHistoricContractRatesSuccessData"/>
+                        <xs:element ref="types:serviceError"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupHistoricContractRatesResult" type="tfmirates:LookupHistoricContractRatesResult" substitutionGroup="types:results"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupHistoricContractRatesSuccessData">
+        <xs:complexContent>
+            <xs:extension base="types:SuccessData">
+                <xs:sequence>
+                    <xs:element name="ratedLane" type="tfmirates:RatedLane">
+                        <xs:annotation>
+                            <xs:documentation>
+                                This is the lane that was actually used to compute the rate. It will
+                                denote the geographic region in which the requested origin and 
+                                destination fall.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="monthlyReport" type="tfmirates:HistoricContractRateReport" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Monthly rate reports for the requested lane. Returned in 
+                                chronological ascending order. Only those months for which rate 
+                                data is available will be returned, so there may be gaps.<br/>
+                                <br/>
+                                The summary for the current month is first computed on the 22nd 
+                                or 23rd of the month (depending on weekends and holidays). Prior 
+                                to that recomputation, the most recent monthly summary available 
+                                is for the previous month. On the 24th (and in some cases on the 
+                                23rd), the current month's summary will be included.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupHistoricContractRatesSuccessData" type="tfmirates:LookupHistoricContractRatesSuccessData" substitutionGroup="types:data"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="HistoricContractRateReport">
+        <xs:complexContent>
+            <xs:extension base="tfmirates:ContractRateReport">
+                <xs:sequence>
+                    <xs:element name="when" type="types:YearMonth">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Date of this estimate.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="nationalLinehaulRate" type="xs:float" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The national average linehaul rate.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- ====================================================================================== -->
+    <!-- -->
+    <!-- Rate Submission -->
+    <!-- -->
+    <!-- ====================================================================================== -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="SubmitRatesRequest">
+        <xs:annotation>
+            <xs:documentation>
+                Submit rate information to TransCore. 
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="message:Request">
+                <xs:sequence>
+                    <xs:element name="submitRatesOperation" type="tfmirates:SubmitRatesOperation"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="submitRatesRequest" type="tfmirates:SubmitRatesRequest" substitutionGroup="message:request"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="SubmitRatesOperation">
+        <xs:complexContent>
+            <xs:extension base="types:Operation">
+                <xs:sequence>
+                    <xs:element name="contributorType">
+                        <!-- Note: In the database, 1=Broker 2=Carrier 3=Intermodal 4=Shipper 5=Contract Carrier -->
+                        <xs:annotation>
+                            <xs:documentation>
+                                Identifies the class of contributor.<br/>
+                                <br/>
+                                Do we want to require this on every submission? 
+                                Or record it at the company or office level?    
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="Broker"/>
+                                <xs:enumeration value="Carrier"/>
+                                <xs:enumeration value="ContractCarrier"/>
+                                <xs:enumeration value="Shipper"/>
+                            </xs:restriction>        
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="loadId" type="types:String25">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Uniquely identifies the specific load. If the rate or details of 
+                                a load changes after initial submission, this identifier will be 
+                                used to update the original submission.    
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="pickupDate" type="xs:date">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Date the load was or will be picked up.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="origin" type="tfmi:Place">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Selected using one of the standard Connexion location-specification
+                                methods.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="destination" type="tfmi:Place">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Selected using one of the standard Connexion location-specification
+                                methods.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="totalAmountPaid">
+                           <xs:annotation>
+                               <xs:documentation>
+                                   The total amount paid to the carrier.<br/>
+                                   <br/>
+                                   Note: It looks like shipper contributions populate this column 
+                                   in the DB (rather than TOTAL_AMNT_PD_SHIPPER)
+                               </xs:documentation>
+                           </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:float">
+                                <xs:minInclusive value="0"/>
+                                <xs:maxInclusive value="99999.99"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="totalAmountPaidByShipper" minOccurs="0"> <!-- Only for Broker or Shipper -->
+                           <xs:annotation>
+                               <xs:documentation>
+                                   The total amount paid by the shipper, if different than the 
+                                   amount paid to the carrier (e.g., if the shipment was brokered). 
+                                   If present, this field should generally be equal to or greater 
+                                   than 'totalAmountPaid'.
+                               </xs:documentation>
+                           </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:float">
+                                <xs:minInclusive value="0"/>
+                                <xs:maxInclusive value="99999.99"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="equipment" type="types:EquipmentType">
+	                    <xs:annotation>
+	                        <xs:documentation>
+	                            Standard TransCore EquipmentType code   
+	                        </xs:documentation>
+	                    </xs:annotation>
+                    </xs:element>
+                    <xs:element name="equipmentDetail" type="types:String50" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                A more detailed description of the equipment than that specified 
+                                in 'equipment', if available. e.g. 'Air Ride', 'Goose Neck', 
+                                'Dbl Drop 53 ft', etc. 
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="mode" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The mode of transport. If unspecified, defaults to 'Truckload'.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="Truckload"/>
+                                <xs:enumeration value="LTL"/>
+                                <xs:enumeration value="Parcel"/>
+                                <xs:enumeration value="Air"/>
+                                <xs:enumeration value="Ocean"/>
+                                <xs:enumeration value="Rail"/>
+                                <xs:enumeration value="Overweight"/>
+                                <xs:enumeration value="Straight Truck"/>
+                                <xs:enumeration value="Intermodal"/>
+                            </xs:restriction>        
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="miles" type="types:NonNegativeInt" minOccurs="0"> 
+                        <xs:annotation>
+                            <xs:documentation>
+                                Total mileage.<br/>
+                                <br/>
+                                Note: I'm told we substitute our own CSB mileage anyway
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>                        
+                    <xs:sequence minOccurs="0">
+                        <xs:element name="pieces" type="types:NonNegativeInt">
+	                        <xs:annotation>
+	                            <xs:documentation>
+	                                Number of individual Pallets, Crates, Barrels, etc. in the 
+	                                shipment.<br/>
+                                    <br/>
+                                    'pieces' and 'units' are not required, but if 'pieces' is 
+                                    specified, 'units' must be as well, describing what that count 
+                                    represents.<br/>
+	                                <br/>
+	                                Note: In Broker format, there is a '# of Units' field that 
+	                                looks to be equivalent.
+	                            </xs:documentation>
+	                        </xs:annotation>
+                        </xs:element>
+                        <xs:element name="units">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    Describes the 'pieces' field.<br/>
+                                    <br/>
+                                    Pieces and units are not required, but if pieces is specified, 
+                                    units must be as well, describing what that count 
+                                    represents.<br/>
+                                    <br/>
+                                    Note: In Broker format, there is a '# of Units' field that 
+                                    looks to be equivalent.
+                                </xs:documentation>
+                            </xs:annotation>
+	                        <xs:simpleType>
+	                            <xs:restriction base="xs:string">
+	                                <xs:enumeration value="Pallets"/>
+	                                <xs:enumeration value="Crates"/>
+	                                <xs:enumeration value="Barrels"/>
+	                                <xs:enumeration value="Other"/>
+	                            </xs:restriction>        
+	                        </xs:simpleType>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:element name="weightPounds" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Total shipment weight in pounds   
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:int">
+                                <xs:minInclusive value="1"/>
+                                <xs:maxInclusive value="199999"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="freightClass" type="types:String50" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                ???<br/>
+                                <br/>
+                                For LTL loads, one or more of 'freightClass', 'cubicFeet', and 
+                                'linearFeet' are required.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="cubicFeet" type="types:NonNegativeInt" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Total shipment volume in cubic feet
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="linearFeet" type="types:NonNegativeInt" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Shipment length in feet
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="pickups" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Number of separate pickups for this trip, including 
+                                origin. 
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:int">
+                                <xs:minInclusive value="1"/>
+                                <xs:maxInclusive value="99"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="drops" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Number of separate drops for this trip, including 
+                                destination. 
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:int">
+                                <xs:minInclusive value="1"/>
+                                <xs:maxInclusive value="99"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="linehaulAmount" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Total linehaul paid for this trip in US Dollars, less all 
+                                accessorials and fuel charges.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:float">
+                                <xs:minInclusive value="0"/>
+                                <xs:maxInclusive value="99999.99"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="fuelSurchargeAmount" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Fuel surcharge paid for this trip in US Dollars.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:float">
+                                <xs:minInclusive value="0"/>
+                                <xs:maxInclusive value="99999.99"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="loadUnloadAmount" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Total load/unload charges paid for this trip in US Dollars.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:float">
+                                <xs:minInclusive value="0"/>
+                                <xs:maxInclusive value="99999.99"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="stopChargeAmount" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Total charges for split pickup and/or stop-off in US Dollars.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:float">
+                                <xs:minInclusive value="0"/>
+                                <xs:maxInclusive value="99999.99"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="otherAccessorialCharge" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Other accessorial charges paid for this trip, including 
+                                description.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="amount">
+			                        <xs:annotation>
+			                            <xs:documentation>
+			                                 Total of all other accessorial charge amounts in 
+			                                 US Dollars.  
+			                            </xs:documentation>
+			                        </xs:annotation>
+			                        <xs:simpleType>
+			                            <xs:restriction base="xs:float">
+			                                <xs:minInclusive value="0"/>
+			                                <xs:maxInclusive value="99999.99"/>
+			                            </xs:restriction>
+			                        </xs:simpleType>
+                                </xs:element>
+                                <xs:element name="description" type="types:String50">
+                                    <xs:annotation>
+                                        <xs:documentation>
+                                             Descripton of other accessorial charge(s).  
+                                        </xs:documentation>
+                                    </xs:annotation>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="rateType">
+                        <xs:annotation>
+                            <xs:documentation>
+                                I'm probably misinterpreting, but it looks like this is 
+                                alternatively titled 'Brokered Frt Flag' and 
+                                'Price set on spot market basis' Do the two fields mean the same 
+                                thing (it appears they're both stored into the BR_FREIGHT_FLAG 
+                                column). Should we offer a choice between two field names? 
+                                Is it required? If not, will we default to one or the other 
+                                when not included?
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+					        <xs:restriction base="xs:string">
+					            <xs:enumeration value="Spot"/>
+					            <xs:enumeration value="Contract"/>
+					        </xs:restriction>        
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="commodity" type="types:String50" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Text description of the commodity carried.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="serviceLevel" minOccurs="0">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="Regular"/>
+                                <xs:enumeration value="Premium"/>
+                                <xs:enumeration value="Expedited"/>
+                                <xs:enumeration value="Team"/>
+                            </xs:restriction>        
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="deliveryDate" type="xs:date" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                ??? This field is in the DB, but not in the Excel formats.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="deliveryApptRequired" type="xs:boolean" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                True if a delivery appointment is required for this load.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="deliveryApptNote" type="types:String40" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                If a delivery appointment is required, optionally includes 
+                                additional information about the appointment   
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                                        
+                    <xs:element name="firstDeliveryApptTime" type="xs:time" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Start time of the delivery appointment (or, the first delivery 
+                                appointment if more than one was required).   
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="shipperName" type="types:String100" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Name of the shipper, if available.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="consigneeName" type="types:String100" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Name of the consignee (if any).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <!-- Not for broker format -->
+                    <xs:element name="brokerName" type="types:String100" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Name of the broker (if any).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="freightValue" type="types:NonNegativeInt" minOccurs="0"> <!-- Range? float or int?-->
+                        <xs:annotation>
+                            <xs:documentation>
+                                Value of the freight carried in US Dollars.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="cargoInsurance" type="types:NonNegativeInt" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Amount of cargo insurance carried by the carrier in US Dollars.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="railroad" type="types:String100" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                ??? What do we want here? Name of the railroad?<br/>
+                                <br/>
+                                Only valid for shipper contributions
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="carrierName" type="types:String100" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Name of the carrier (unnecessary for rate submissions by the 
+                                carrier)   
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="scacCode" type="types:String4" minOccurs="0"> <!-- Only for shipper and broker formats. Is there any reason this should be longer than 4 characters?-->
+                        <xs:annotation>
+                            <xs:documentation>
+                                Standard Carrier Alpha Code of the carrier (unnecessary for rate 
+                                submissions by the carrier)   
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="locationName" type="types:String50" minOccurs="0"> <!-- Not for broker-->
+                        <xs:annotation>
+                            <xs:documentation>
+                                ??? Name of the pickup location? Delivery location?
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="pickupAddress" type="types:String250" minOccurs="0"/> <!-- ??? Not for broker -->
+                    <xs:element name="deliveryAddress" type="types:String250" minOccurs="0"/> <!-- ??? Not for broker -->
+                    <xs:element name="pickupApptRequired" type="xs:boolean" minOccurs="0"> <!-- ??? Not for broker -->
+                        <xs:annotation>
+                            <xs:documentation>
+                                True if a pickup appointment is required for this load.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:sequence minOccurs="0">
+                        <xs:element name="firstPickupApptStartTime" type="xs:time">
+	                        <xs:annotation>
+	                            <xs:documentation>
+	                                Start time of the first pickup appointment. This field is 
+	                                optional, but if start time is included, end time must be 
+	                                as well.   
+	                            </xs:documentation>
+	                        </xs:annotation>
+                        </xs:element>
+                        <xs:element name="firstPickupApptEndTime" type="xs:time">
+	                        <xs:annotation>
+	                            <xs:documentation>
+	                                End time of the first pickup appointment. This field is 
+	                                optional, but if start time is included, end time must be 
+	                                as well.   
+	                            </xs:documentation>
+	                        </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:element name="orderBookDate" type="xs:date" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                ??? How should we describe this field?
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="shipmentExceptionCode" type="types:String50" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                ??? What do we want in this field?
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="carrierType" type="types:String50" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                ??? What do we want in this field?
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="paymentTerms" type="types:String50" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Payment terms. e.g., '15 days', '30 days after delivery'.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="payDate" type="xs:date" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                ??? Date payment was due? Date it was received?
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="hazmat" type="xs:boolean" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                True if the load is considered hazardous material.<br/>
+                                <br/>
+                                Note: This field is in the Excel formats, but doesn't appear to be 
+                                stored in the DB.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="originRamp" type="xs:boolean" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                ??? This field is in the DB, but not in the Excel formats
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="destinationRamp" type="xs:boolean" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                ??? This field is in the DB, but not in the Excel formats
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="submitRatesOperation" type="tfmirates:SubmitRatesOperation" substitutionGroup="types:operations"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="SubmitRatesResponse">
+        <xs:complexContent>
+            <xs:extension base="message:Response">
+                <xs:sequence>
+                    <xs:element ref="tfmirates:submitRatesResult" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="submitRatesResponse" type="tfmirates:SubmitRatesResponse" substitutionGroup="message:response"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="SubmitRatesResult">
+        <xs:complexContent>
+            <xs:extension base="types:Result">
+                <xs:sequence>
+                    <xs:choice>
+                        <xs:element ref="tfmirates:submitRatesSuccessData"/>
+                        <xs:element ref="types:serviceError"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="submitRatesResult" type="tfmirates:SubmitRatesResult" substitutionGroup="types:results"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="SubmitRatesSuccessData">
+        <xs:complexContent>
+            <xs:extension base="types:SuccessData">
+                <xs:sequence/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="submitRatesSuccessData" type="tfmirates:SubmitRatesSuccessData" substitutionGroup="types:data"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- ====================================================================================== -->
+    <!-- -->
+    <!-- DOE Fuel Prices -->
+    <!-- -->
+    <!-- ====================================================================================== -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupDoeFuelPricesRequest">
+        <xs:annotation>
+            <xs:documentation>
+                Lookup diesel fuel prices over the past 13 months, as reported by the 
+                Department of Energy.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="message:Request">
+                <xs:sequence>
+                    <xs:element name="lookupDoeFuelPricesOperation" type="tfmirates:LookupDoeFuelPricesOperation"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupDoeFuelPricesRequest" type="tfmirates:LookupDoeFuelPricesRequest" substitutionGroup="message:request"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupDoeFuelPricesOperation">
+        <xs:complexContent>
+            <xs:extension base="types:Operation">
+                <xs:sequence/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupDoeFuelPricesOperation" type="tfmirates:LookupDoeFuelPricesOperation" substitutionGroup="types:operations"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupDoeFuelPricesResponse">
+        <xs:complexContent>
+            <xs:extension base="message:Response">
+                <xs:sequence>
+                    <xs:element ref="tfmirates:lookupDoeFuelPricesResult" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupDoeFuelPricesResponse" type="tfmirates:LookupDoeFuelPricesResponse" substitutionGroup="message:response"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupDoeFuelPricesResult">
+        <xs:complexContent>
+            <xs:extension base="types:Result">
+                <xs:sequence>
+                    <xs:choice>
+                        <xs:element ref="tfmirates:lookupDoeFuelPricesSuccessData"/>
+                        <xs:element ref="types:serviceError"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupDoeFuelPricesResult" type="tfmirates:LookupDoeFuelPricesResult" substitutionGroup="types:results"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupDoeFuelPricesSuccessData">
+        <xs:complexContent>
+            <xs:extension base="types:SuccessData">
+                <xs:sequence>
+                    <xs:element name="monthlyReports" type="tfmirates:DoeFuelPriceMonthlyReport" maxOccurs="unbounded">
+				        <xs:annotation>
+				            <xs:documentation>
+				                The DOE reports prices for the current month a few days into the 
+                                month. If a price is available for the current month, the report 
+                                will include the current month and the previous 12 months. If no 
+                                price is available for the current month, the report will instead 
+                                include the previous 13 months. 
+				            </xs:documentation>
+				        </xs:annotation>
+				    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupDoeFuelPricesSuccessData" type="tfmirates:LookupDoeFuelPricesSuccessData" substitutionGroup="types:data"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="DoeFuelPriceMonthlyReport">
+        <xs:sequence>
+            <xs:element name="when" type="types:YearMonth">
+		        <xs:annotation>
+		            <xs:documentation>
+		                The month and year represented by this report. 
+		            </xs:documentation>
+		        </xs:annotation>
+            </xs:element>
+            <xs:element name="pricePerGallon" type="xs:float">
+		        <xs:annotation>
+		            <xs:documentation>
+		                Average monthly diesel price in USD. 
+		            </xs:documentation>
+		        </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- ====================================================================================== -->
+    <!-- -->
+    <!-- Billed Rate Transactions and Credited Contributions -->
+    <!-- -->
+    <!-- ====================================================================================== -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupBilledRateTransactionsRequest">
+        <xs:annotation>
+            <xs:documentation>
+                Looks up the rate transactions during current billing period for the
+                user's subscription. Note that this assumes the user will have only a single
+                rate subscription (spot, combo, etc.)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="message:Request">
+                <xs:sequence>
+                    <xs:element ref="tfmirates:lookupBilledRateTransactionsOperation"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupBilledRateTransactionsRequest" type="tfmirates:LookupBilledRateTransactionsRequest" substitutionGroup="message:request"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupBilledRateTransactionsOperation">
+        <xs:complexContent>
+            <xs:extension base="types:Operation">
+                <xs:sequence/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupBilledRateTransactionsOperation" type="tfmirates:LookupBilledRateTransactionsOperation" substitutionGroup="types:operations"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupBilledRateTransactionsResponse">
+        <xs:annotation>
+            <xs:documentation>
+                Summary and details of the rate lookup transactions for the user's subscription and
+                contributions from the user's office during the current billing cycle. Any
+                contribution credits will be applied to the next billing cycle (although not
+                necessarily to the user's own subscription if the office maintains multiple rating
+                subscriptions).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="message:Response">
+                <xs:sequence>
+                    <xs:element ref="tfmirates:lookupBilledRateTransactionsResult" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupBilledRateTransactionsResponse" type="tfmirates:LookupBilledRateTransactionsResponse" substitutionGroup="message:response"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupBilledRateTransactionsResult">
+        <xs:complexContent>
+            <xs:extension base="types:Result">
+                <xs:sequence>
+                    <xs:choice>
+                        <xs:element ref="tfmirates:lookupBilledRateTransactionsSuccessData"/>
+                        <xs:element ref="types:serviceError"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupBilledRateTransactionsResult" type="tfmirates:LookupBilledRateTransactionsResult" substitutionGroup="types:results"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookupBilledRateTransactionsSuccessData">
+        <xs:complexContent>
+            <xs:extension base="types:SuccessData">
+                <xs:sequence>
+                    <xs:element name="lastUpdated" type="types:UTC">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The last update of the billing record. This will generally be
+                                updated near real-time, but may not always include very recent 
+                                lookups.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="lastBillDate" type="types:UTC">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The start of the current billing cycle.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="nextBillDate" type="types:UTC">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The end of the current billing cycle.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="productName" type="types:String100">
+                        <xs:annotation>
+                            <xs:documentation>
+                                A brief description of the rate product (subscription) to which
+                                the user is assigned. (e.g. 'Silver (10,000 lanes/month)')
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="lanesAllowed" type="types:NonNegativeInt">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The number of lane lookups allowed during the current billing
+                                cycle.
+                                <br/>
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="lanesUsed" type="types:NonNegativeInt">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The number of lane lookups performed during the current billing
+                                cycle.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="lanesCredited" type="types:NonNegativeInt">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The number of lane lookups credited for contributing lane rate
+                                information during the current billing cycle.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="lanesRemaining" type="types:NonNegativeInt">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The number of lane lookups remaining during the current billing
+                                cycle (This will always be equivalent to 
+                                'lanesAllowed' - 'lanesUsed' + 'lanesCredited')
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="lookupDetails" type="tfmirates:BilledRateTransaction" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element name="contributionDetails" type="tfmirates:CreditedRateContribution" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookupBilledRateTransactionsSuccessData" type="tfmirates:LookupBilledRateTransactionsSuccessData" substitutionGroup="types:data"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="RateTransaction">
+        <xs:sequence>
+            <xs:element name="date" type="types:UTC">
+                <xs:annotation>
+                    <xs:documentation>
+                        Date of the lookup transaction.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="laneCount" type="types:NonNegativeInt">
+                <xs:annotation>
+                    <xs:documentation>
+                        Number of lanes looked up.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="BilledRateTransaction">
+        <xs:complexContent>
+            <xs:extension base="tfmirates:RateTransaction">
+                <xs:sequence>
+                    <xs:element name="rateType" type="tfmirates:RateType">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Lookup type (spot or contract).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="equipment" type="tfmirates:RateEquipmentCategory">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Equipment category queried in this lookup transaction.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="charge" type="xs:float">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Estimated charge for this transaction. This value will generally be 
+                                zero until the contracted limit for the subscription is reached,
+                                after which each lane looked up will be billed at the contracted 
+                                overage rate.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="CreditedRateContribution">
+        <xs:complexContent>
+            <xs:extension base="tfmirates:RateTransaction">
+                <xs:sequence>
+                    <xs:element name="estimatedCredit" type="types:NonNegativeInt">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Estimate of the number of lane lookups which will be credited to 
+                                the user's office during the next billing cycle as a result of 
+                                this contribution.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- --> 
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="RateEquipmentCategory">
+        <xs:annotation>
+            <xs:documentation>
+                Rates deal with broader groups of equipment than either EquipmentTypes or 
+                EquipmentClasses. Each of the below categories includes one or more 
+                EquipmentClasses.
+                <br/>
+                Note: These categories apply only to rate calculations. They do not apply to other
+                TransCore requests (e.g. freight matching and carrier information).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Vans"/>
+            <xs:enumeration value="Flatbeds"/>
+            <xs:enumeration value="Reefers"/>
+        </xs:restriction>        
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="RateType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Contract"/>
+            <xs:enumeration value="Spot"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+</xs:schema>

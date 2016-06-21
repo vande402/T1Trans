@@ -1,0 +1,989 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- $Id: TfmiCob.xsd 12492 2012-01-06 00:39:18Z JonasonH $ --><!-- Best viewed with fixed-width (e.g., Courier) font --><xs:schema xmlns:tfmi="http://www.tcore.com/TfmiCob.xsd" xmlns:headers="http://www.tcore.com/TcoreHeaders.xsd" xmlns:message="http://www.tcore.com/TcoreMessage.xsd" xmlns:types="http://www.tcore.com/TcoreTypes.xsd" xmlns:carrierWatchTypes="http://www.tcore.com/TcoreCarrierWatchTypes.xsd" xmlns:tcobTypes="http://www.tcore.com/TcoreCobTypes.xsd" xmlns:tdobTypes="http://www.tcore.com/TcoreDobTypes.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tfmiwsdl="http://www.tcore.com/TfmiCob.wsdl" targetNamespace="http://www.tcore.com/TfmiCob.xsd" elementFormDefault="qualified">
+
+    <xs:annotation>
+        <xs:documentation>
+            <h2>TransCore Carrier-On-Boarding Interface Schema</h2>
+            <br/>
+            <br/>
+            This schema defines request/response external API to the TransCore Carrier-On Boarding Service
+            <br/>
+            Published: January 2012
+            <br/>
+            Version: tfmiCob-1.0
+            <br/>
+            <br/>
+            <i>Copyright (C) 2004-2012, TransCore LP, All Rights Reserved.</i>
+            <br/>
+            <br/>
+            <br/>
+        </xs:documentation>
+        <xs:appinfo>
+            <wsdl>
+<!--                 <service name="TfmiCob" useTargetNamespace="tfmi" useHeaderNamespace="headers"> -->
+<!--                     <operation name="CreateCarrier" namespace="tfmi" /> -->
+<!--                     <operation name="UpdateCarrierProfile" namespace="tfmi" /> -->
+<!--                     <operation name="UpdateCarrierInsuranceInfo" namespace="tfmi" /> -->
+<!--                     <operation name="SendSignedContractToCustomer" namespace="tfmi" /> -->
+<!--                     <operation name="UpdateCarrierW9" namespace="tfmi" /> -->
+<!--                     <operation name="GetCarrierDetailViewUrl" namespace="tfmi" /> -->
+<!--                 </service> -->
+
+                <service name="TfmiCob" namespace="tfmi">
+                    <operation name="CreateCarrier"/>
+                    <operation name="UpdateCarrierProfile"/>
+                    <operation name="UpdateCarrierInsuranceInfo"/>
+                    <operation name="SendSignedContractToCustomer"/>
+                    <operation name="UpdateCarrierW9"/>
+                    <operation name="GetCarrierDetailViewUrl"/>
+                    <operation name="UpdateAttachment"/>
+                    <operation name="GetCarrierWatchWarningLevel"/>
+                </service>
+            </wsdl>
+        </xs:appinfo>
+    </xs:annotation>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:import namespace="http://www.tcore.com/TcoreTypes.xsd" schemaLocation="TcoreTypes.xsd"/>
+    <xs:import namespace="http://www.tcore.com/TcoreHeaders.xsd" schemaLocation="TcoreHeaders.xsd"/>
+    <xs:import namespace="http://www.tcore.com/TcoreMessage.xsd" schemaLocation="TcoreMessage.xsd"/>
+    <xs:import namespace="http://www.tcore.com/TcoreCobTypes.xsd" schemaLocation="TcoreCobTypes.xsd"/>
+    <xs:import namespace="http://www.tcore.com/TcoreDobTypes.xsd" schemaLocation="TcoreDobTypes.xsd"/>
+
+	<xs:complexType name="CreateCarrierRequest">
+		<xs:annotation>
+			<xs:documentation>
+				Request to create a carrier in Transcore's system. Also request to
+				monitor the carrier's insurance (depending on the user's
+				capability.)]
+				<br/>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="message:Request">
+				<xs:sequence>
+					<xs:element ref="tfmi:createCarrierOperation"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="createCarrierRequest" type="tfmi:CreateCarrierRequest" substitutionGroup="message:request"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="CreateCarrierOperation">
+		<xs:complexContent>
+			<xs:extension base="types:Operation">
+				<xs:sequence>
+					<xs:element name="requesterName" type="xs:string" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Requester's name.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="requesterPhoneNumber" type="types:PhoneNumber" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Requester's phone number.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="requesterVendorId" type="types:NonNegativeInt" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Requester's vendor id.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="requesterCompanyName" type="xs:string" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Requester's company.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="requesterSNumber" type="xs:string" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Requester company's S number.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="requesterLoadingToday" type="xs:boolean" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Is the loading happening today.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="carrierBusinessUnitId" type="types:NonNegativeInt" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Carrier's business unit id.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="carrierCompanyName" type="xs:string" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Carrier's name.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="carrierAddressLine1" type="xs:string" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Carrier's address.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="carrierAddressLine2" type="xs:string" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Carrier's address details.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="carrierCity" type="xs:string" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Carrier's city.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="carrierState" type="xs:string" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Carrier's state.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="carrierZipCode" type="xs:string" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Carrier's zip/postal code.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="carrierDotNumber" type="xs:nonNegativeInteger" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Carrier's dot number.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="carrierMcNumber" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Carrier's MC number.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="carrierIntrastateCode" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Carrier's intrastate code.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="carrierFederalTaxId" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Carrier's federal tax id.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="carrierContactName" type="xs:string" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Carrier's contact person.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="carrierPhoneNumber" type="types:PhoneNumber" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Carrier's phone number.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="carrierFaxNumber" type="types:PhoneNumber" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Carrier's fax number.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="comments" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Comments.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="createCarrierOperation" type="tfmi:CreateCarrierOperation" substitutionGroup="types:operations"/>
+	<!-- -->
+	<!-- -->
+	<!-- ======================================================================================= -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="CreateCarrierResponse">
+		<xs:complexContent>
+			<xs:extension base="message:Response">
+				<xs:sequence>
+					<xs:element ref="tfmi:createCarrierResult" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="createCarrierResponse" type="tfmi:CreateCarrierResponse" substitutionGroup="message:response"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="CreateCarrierResult">
+		<xs:complexContent>
+			<xs:extension base="types:Result">
+				<xs:sequence>
+					<xs:choice>
+						<xs:element ref="tfmi:createCarrierSuccessData"/>
+						<xs:element ref="types:serviceError"/>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="createCarrierResult" type="tfmi:CreateCarrierResult" substitutionGroup="types:results"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="CreateCarrierSuccessData">
+		<xs:complexContent>
+			<xs:extension base="types:SuccessData">
+				<xs:sequence>
+					<xs:element name="resultMessage" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Acknowlegement message to the user.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="createCarrierSuccessData" type="tfmi:CreateCarrierSuccessData" substitutionGroup="types:data"/>
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="UpdateCarrierProfileRequest">
+		<xs:annotation>
+			<xs:documentation>
+				Indicate a carrier has registered in Carrier On-Boarding.
+				<br/>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="message:Request">
+				<xs:sequence>
+					<xs:element ref="tfmi:updateCarrierProfileOperation"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="updateCarrierProfileRequest" type="tfmi:UpdateCarrierProfileRequest" substitutionGroup="message:request"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="UpdateCarrierProfileOperation">
+		<xs:complexContent>
+			<xs:extension base="types:Operation">
+				<xs:sequence>
+					<xs:element name="carrier" type="tcobTypes:Carrier" minOccurs="1"/>
+<!-- 
+					<xs:element name="generalSection" type="tcobTypes:GeneralSection" minOccurs="1"/>
+					<xs:element name="paymentSection" type="tcobTypes:PaymentSection" minOccurs="1"/>
+					<xs:element name="servicesSection" type="tcobTypes:ServicesSection" minOccurs="1"/>
+					<xs:element name="fleetSection" type="tcobTypes:FleetSection" minOccurs="1"/>
+					<xs:element name="geographicSection" type="tcobTypes:GeographicSection" minOccurs="1"/>
+					<xs:element name="insuranceInfo" type="tcobTypes:InsuranceInfo" minOccurs="1"/>
+					<xs:element name="w9Info" type="tdobTypes:W9Info" minOccurs="1"/>
+-->
+                    <xs:element name="cobCustomer" type="tcobTypes:CobCustomer" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>
+                                All customers that have signed contracts with this carrier.              
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="updateCarrierProfileOperation" type="tfmi:UpdateCarrierProfileOperation" substitutionGroup="types:operations"/>
+	<!-- -->
+	<!-- -->
+	<!-- ======================================================================================= -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="UpdateCarrierProfileResponse">
+		<xs:complexContent>
+			<xs:extension base="message:Response">
+				<xs:sequence>
+					<xs:element ref="tfmi:updateCarrierProfileResult" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="updateCarrierProfileResponse" type="tfmi:UpdateCarrierProfileResponse" substitutionGroup="message:response"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="UpdateCarrierProfileResult">
+		<xs:complexContent>
+			<xs:extension base="types:Result">
+				<xs:sequence>
+					<xs:choice>
+						<xs:element ref="tfmi:updateCarrierProfileSuccessData"/>
+						<xs:element ref="types:serviceError"/>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="updateCarrierProfileResult" type="tfmi:UpdateCarrierProfileResult" substitutionGroup="types:results"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="UpdateCarrierProfileSuccessData">
+		<xs:complexContent>
+			<xs:extension base="types:SuccessData">
+				<xs:sequence>
+
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="updateCarrierProfileSuccessData" type="tfmi:UpdateCarrierProfileSuccessData" substitutionGroup="types:data"/>
+	<!-- -->
+	<!-- -->
+
+
+	<xs:complexType name="UpdateCarrierInsuranceInfoRequest">
+		<xs:annotation>
+			<xs:documentation>
+				Provides data about a carrier to the registry.
+				<br/>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="message:Request">
+				<xs:sequence>
+					<xs:element ref="tfmi:updateCarrierInsuranceInfoOperation"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="updateCarrierInsuranceInfoRequest" type="tfmi:UpdateCarrierInsuranceInfoRequest" substitutionGroup="message:request"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="UpdateCarrierInsuranceInfoOperation">
+		<xs:complexContent>
+			<xs:extension base="types:Operation">
+				<xs:sequence>
+					<xs:element name="carrier" type="tcobTypes:Carrier" minOccurs="1"/>
+                    <xs:element name="agentDataChanged" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="insuranceInfo" type="tcobTypes:InsuranceInfo" minOccurs="1"/>
+                    <xs:element name="cobCustomer" type="tcobTypes:CobCustomer" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>
+                                All customers that have signed contracts with this carrier.              
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="updateCarrierInsuranceInfoOperation" type="tfmi:UpdateCarrierInsuranceInfoOperation" substitutionGroup="types:operations"/>
+	<!-- -->
+	<!-- -->
+	<!-- ======================================================================================= -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="UpdateCarrierInsuranceInfoResponse">
+		<xs:complexContent>
+			<xs:extension base="message:Response">
+				<xs:sequence>
+					<xs:element ref="tfmi:updateCarrierInsuranceInfoResult" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="updateCarrierInsuranceInfoResponse" type="tfmi:UpdateCarrierInsuranceInfoResponse" substitutionGroup="message:response"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="UpdateCarrierInsuranceInfoResult">
+		<xs:complexContent>
+			<xs:extension base="types:Result">
+				<xs:sequence>
+					<xs:choice>
+						<xs:element ref="tfmi:updateCarrierInsuranceInfoSuccessData"/>
+						<xs:element ref="types:serviceError"/>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="updateCarrierInsuranceInfoResult" type="tfmi:UpdateCarrierInsuranceInfoResult" substitutionGroup="types:results"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="UpdateCarrierInsuranceInfoSuccessData">
+		<xs:complexContent>
+			<xs:extension base="types:SuccessData">
+				<xs:sequence>
+
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="updateCarrierInsuranceInfoSuccessData" type="tfmi:UpdateCarrierInsuranceInfoSuccessData" substitutionGroup="types:data"/>
+	<!-- -->
+	<!-- -->
+
+
+	<xs:complexType name="SendSignedContractToCustomerRequest">
+		<xs:annotation>
+			<xs:documentation>
+				Informs the system that a carrier has electronically signed a
+				broker's contract.
+				<br/>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="message:Request">
+				<xs:sequence>
+					<xs:element ref="tfmi:sendSignedContractToCustomerOperation"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="sendSignedContractToCustomerRequest" type="tfmi:SendSignedContractToCustomerRequest" substitutionGroup="message:request"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="SendSignedContractToCustomerOperation">
+		<xs:complexContent>
+			<xs:extension base="types:Operation">
+				<xs:sequence>
+					<xs:element name="carrier" type="tcobTypes:Carrier" minOccurs="1"/>
+					<xs:element name="contract" type="tcobTypes:Contract" minOccurs="1" maxOccurs="unbounded"/>
+                    <!-- 
+					<xs:element name="generalSection" type="tcobTypes:GeneralSection" minOccurs="1"/>
+					<xs:element name="paymentSection" type="tcobTypes:PaymentSection" minOccurs="1"/>
+					<xs:element name="servicesSection" type="tcobTypes:ServicesSection" minOccurs="1"/>
+					<xs:element name="fleetSection" type="tcobTypes:FleetSection" minOccurs="1"/>
+					<xs:element name="geographicSection" type="tcobTypes:GeographicSection" minOccurs="1"/>
+					<xs:element name="equipmentDetail" type="tcobTypes:EquipmentDetail" minOccurs="1"/>
+					<xs:element name="insuranceInfo" type="tcobTypes:InsuranceInfo" minOccurs="1"/>
+					<xs:element name="w9Info" type="tdobTypes:W9Info" minOccurs="1"/>
+                     -->
+ 					<xs:element name="cobCustomer" type="tcobTypes:CobCustomer" minOccurs="1" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Customer that owns the contract.              
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="sendSignedContractToCustomerOperation" type="tfmi:SendSignedContractToCustomerOperation" substitutionGroup="types:operations"/>
+	<!-- -->
+	<!-- -->
+	<!-- ======================================================================================= -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="SendSignedContractToCustomerResponse">
+		<xs:complexContent>
+			<xs:extension base="message:Response">
+				<xs:sequence>
+					<xs:element ref="tfmi:sendSignedContractToCustomerResult" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="sendSignedContractToCustomerResponse" type="tfmi:SendSignedContractToCustomerResponse" substitutionGroup="message:response"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="SendSignedContractToCustomerResult">
+		<xs:complexContent>
+			<xs:extension base="types:Result">
+				<xs:sequence>
+					<xs:choice>
+						<xs:element ref="tfmi:sendSignedContractToCustomerSuccessData"/>
+						<xs:element ref="types:serviceError"/>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="sendSignedContractToCustomerResult" type="tfmi:SendSignedContractToCustomerResult" substitutionGroup="types:results"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="SendSignedContractToCustomerSuccessData">
+		<xs:complexContent>
+			<xs:extension base="types:SuccessData">
+				<xs:sequence>
+
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="sendSignedContractToCustomerSuccessData" type="tfmi:SendSignedContractToCustomerSuccessData" substitutionGroup="types:data"/>
+	<!-- -->
+	<!-- -->
+
+	<xs:complexType name="UpdateCarrierW9Request">
+		<xs:annotation>
+			<xs:documentation>
+				Notifies TransCore that a carrier has changed their insurance agent
+				information.
+				<br/>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="message:Request">
+				<xs:sequence>
+					<xs:element ref="tfmi:updateCarrierW9Operation"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="updateCarrierW9Request" type="tfmi:UpdateCarrierW9Request" substitutionGroup="message:request"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="UpdateCarrierW9Operation">
+		<xs:complexContent>
+			<xs:extension base="types:Operation">
+				<xs:sequence>
+                    <xs:element name="updatedTinStatus" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Indicates whether the TIN status was updated. 
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="carrier" type="tcobTypes:Carrier" minOccurs="1"/>
+                    <xs:choice>
+                        <xs:element name="w9Info" type="tdobTypes:W9Info"/>
+                        <xs:element name="w8Info" type="tdobTypes:W8Info"/>
+                    </xs:choice>
+					<xs:element name="carrierUser" type="tcobTypes:CobCarrierUser" minOccurs="1" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The login information associated with this carrier.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="primaryContactEmail" type="types:EmailAddress" minOccurs="1" maxOccurs="1"/>
+                    <xs:element name="cobCustomer" type="tcobTypes:CobCustomer" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>
+                                All customers that have signed contracts with this carrier.  
+                                Specify only when TIN status is NOT pending.              
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="updateCarrierW9Operation" type="tfmi:UpdateCarrierW9Operation" substitutionGroup="types:operations"/>
+	<!-- -->
+	<!-- -->
+	<!-- ======================================================================================= -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="UpdateCarrierW9Response">
+		<xs:complexContent>
+			<xs:extension base="message:Response">
+				<xs:sequence>
+					<xs:element ref="tfmi:updateCarrierW9Result" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="updateCarrierW9Response" type="tfmi:UpdateCarrierW9Response" substitutionGroup="message:response"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="UpdateCarrierW9Result">
+		<xs:complexContent>
+			<xs:extension base="types:Result">
+				<xs:sequence>
+					<xs:choice>
+						<xs:element ref="tfmi:updateCarrierW9SuccessData"/>
+						<xs:element ref="types:serviceError"/>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="updateCarrierW9Result" type="tfmi:UpdateCarrierW9Result" substitutionGroup="types:results"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="UpdateCarrierW9SuccessData">
+		<xs:complexContent>
+			<xs:extension base="types:SuccessData">
+				<xs:sequence>
+
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="updateCarrierW9SuccessData" type="tfmi:UpdateCarrierW9SuccessData" substitutionGroup="types:data"/>
+	<!-- -->
+	<!-- -->
+   
+	<xs:complexType name="GetCarrierDetailViewUrlRequest">
+		<xs:annotation>
+			<xs:documentation>
+				Returns a URL for the customer to view the CW detail page for a carrier.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="message:Request">
+				<xs:sequence>
+					<xs:element ref="tfmi:getCarrierDetailViewUrlOperation"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="getCarrierDetailViewUrlRequest" type="tfmi:GetCarrierDetailViewUrlRequest" substitutionGroup="message:request"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="GetCarrierDetailViewUrlOperation">
+		<xs:complexContent>
+			<xs:extension base="types:Operation">
+				<xs:sequence>
+					<xs:element name="cobCustomer" type="tcobTypes:CobCustomer" minOccurs="1">
+					</xs:element>
+					<xs:element name="carrier" type="tcobTypes:Carrier" minOccurs="1">
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="getCarrierDetailViewUrlOperation" type="tfmi:GetCarrierDetailViewUrlOperation" substitutionGroup="types:operations"/>
+	<!-- -->
+	<!-- -->
+	<!-- ======================================================================================= -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="GetCarrierDetailViewUrlResponse">
+		<xs:complexContent>
+			<xs:extension base="message:Response">
+				<xs:sequence>
+					<xs:element ref="tfmi:getCarrierDetailViewUrlResult" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="getCarrierDetailViewUrlResponse" type="tfmi:GetCarrierDetailViewUrlResponse" substitutionGroup="message:response"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="GetCarrierDetailViewUrlResult">
+		<xs:complexContent>
+			<xs:extension base="types:Result">
+				<xs:sequence>
+					<xs:choice>
+						<xs:element ref="tfmi:getCarrierDetailViewUrlSuccessData"/>
+						<xs:element ref="types:serviceError"/>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="getCarrierDetailViewUrlResult" type="tfmi:GetCarrierDetailViewUrlResult" substitutionGroup="types:results"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="GetCarrierDetailViewUrlSuccessData">
+		<xs:complexContent>
+			<xs:extension base="types:SuccessData">
+				<xs:sequence>
+					<xs:element name="url" type="xs:string" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								URL for the customer to view the CW detail page for a carrier.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="getCarrierDetailViewUrlSuccessData" type="tfmi:GetCarrierDetailViewUrlSuccessData" substitutionGroup="types:data"/>
+	<!-- -->
+	<!-- -->
+ <!-- ======================================================================================= -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="UpdateAttachmentRequest">
+        <xs:annotation>
+            <xs:documentation>
+                Request to update attachment.
+                <br/>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="message:Request">
+                <xs:sequence>
+                    <xs:element ref="tfmi:updateAttachmentOperation"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="updateAttachmentRequest" type="tfmi:UpdateAttachmentRequest" substitutionGroup="message:request"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="UpdateAttachmentOperation">
+        <xs:complexContent>
+            <xs:extension base="types:Operation">
+                <xs:sequence>
+                    <xs:element name="attachment" type="tcobTypes:Attachment" minOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Attachment.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="carrier" type="tcobTypes:Carrier" minOccurs="1"/>
+                    <xs:element name="cobCustomer" type="tcobTypes:CobCustomer" minOccurs="1" maxOccurs="unbounded"/> 
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="updateAttachmentOperation" type="tfmi:UpdateAttachmentOperation" substitutionGroup="types:operations"/>
+    <!-- -->
+    <!-- -->
+    <!-- ======================================================================================= -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="UpdateAttachmentResponse">
+        <xs:complexContent>
+            <xs:extension base="message:Response">
+                <xs:sequence>
+                    <xs:element ref="tfmi:updateAttachmentResult" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="updateAttachmentResponse" type="tfmi:UpdateAttachmentResponse" substitutionGroup="message:response"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="UpdateAttachmentResult">
+        <xs:complexContent>
+            <xs:extension base="types:Result">
+                <xs:sequence>
+                    <xs:choice>
+                        <xs:element ref="tfmi:updateAttachmentSuccessData"/>
+                        <xs:element ref="types:serviceError"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="updateAttachmentResult" type="tfmi:UpdateAttachmentResult" substitutionGroup="types:results"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="UpdateAttachmentSuccessData">
+        <xs:complexContent>
+            <xs:extension base="types:SuccessData">
+                <xs:sequence>
+                    <xs:element name="resultMessage" type="xs:string" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Acknowlegement message to the user.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="updateAttachmentSuccessData" type="tfmi:UpdateAttachmentSuccessData" substitutionGroup="types:data"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- ======================================================================================= -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="GetCarrierWatchWarningLevelRequest">
+        <xs:annotation>
+            <xs:documentation>
+                Requests the warning level of a given carrier using the broker's configurable levels.
+                <br/>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="message:Request">
+                <xs:sequence>
+                    <xs:element ref="tfmi:getCarrierWatchWarningLevelOperation"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="getCarrierWatchWarningLevelRequest" type="tfmi:GetCarrierWatchWarningLevelRequest" substitutionGroup="message:request"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="GetCarrierWatchWarningLevelOperation">
+        <xs:complexContent>
+            <xs:extension base="types:Operation">
+                <xs:sequence>
+                    <xs:element name="cobCustomer" type="tcobTypes:CobCustomer" minOccurs="1">
+                    </xs:element>
+                    <xs:element name="carrier" type="tcobTypes:Carrier" minOccurs="1">
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="getCarrierWatchWarningLevelOperation" type="tfmi:GetCarrierWatchWarningLevelOperation" substitutionGroup="types:operations"/>
+    <!-- -->
+    <!-- -->
+    <!-- ======================================================================================= -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="GetCarrierWatchWarningLevelResponse">
+        <xs:complexContent>
+            <xs:extension base="message:Response">
+                <xs:sequence>
+                    <xs:element ref="tfmi:getCarrierWatchWarningLevelResult" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="getCarrierWatchWarningLevelResponse" type="tfmi:GetCarrierWatchWarningLevelResponse" substitutionGroup="message:response"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="GetCarrierWatchWarningLevelResult">
+        <xs:complexContent>
+            <xs:extension base="types:Result">
+                <xs:sequence>
+                    <xs:choice>
+                        <xs:element ref="tfmi:getCarrierWatchWarningLevelSuccessData"/>
+                        <xs:element ref="types:serviceError"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="getCarrierWatchWarningLevelResult" type="tfmi:GetCarrierWatchWarningLevelResult" substitutionGroup="types:results"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="GetCarrierWatchWarningLevelSuccessData">
+        <xs:complexContent>
+            <xs:extension base="types:SuccessData">
+                <xs:sequence>
+                    <xs:element name="carrierwatchEvaluation" type="carrierWatchTypes:CarrierWatchEvaluation" minOccurs="1" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The Carrierwatch Evaluation based on the Broker's warning configuration.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="getCarrierWatchWarningLevelSuccessData" type="tfmi:GetCarrierWatchWarningLevelSuccessData" substitutionGroup="types:data"/>
+    <!-- -->
+    <!-- -->
+</xs:schema>

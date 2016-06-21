@@ -1,0 +1,244 @@
+
+body {font-family: 'Open Sans', sans-serif; background-image:url('../images/background.jpg'); background-color:#0c021a;     background-position: center center;
+    background-attachment: fixed; color:#fff; overflow-x: hidden;     background-repeat: no-repeat;     background-size: cover;
+   font-size:13.5px !important}
+   
+   
+header {
+    padding: 25px 0px;
+    background: ##4A3949;
+}
+
+  header .container {
+    width: 100%;
+    max-width: 100%;
+}
+
+header h1 {    font-weight: bold;
+    font-style: italic;
+        text-transform: capitalize;
+    font-size: 3.5em; text-align:center}
+    
+.page-head {
+       background-color: rgba(31, 31, 31, 0.58);
+    padding: 8px 20px;
+       box-shadow: 0 1px 1px rgba(0,0,0,0.1)
+  border-top: 1px solid #636161;}
+
+.page-head h2 {
+    font-weight: normal;
+    font-size: 20px;
+}
+
+.form-control {
+    border-radius: 0;
+    box-shadow: none;
+    border-color: #d2d6de;
+}
+
+.content-wrapper {
+    min-height: 100%;
+    background-color: /* #ecf0f5 */ ;
+  height:100%
+}
+
+.box {
+    position: relative;
+    border-radius: 3px;
+    /* background: #ffffff;
+    border-top: 3px solid #d2d6de; */
+        background: rgba(31, 31, 31, 0.58);
+    border-top: 3px solid #04447B;
+    margin-bottom: 20px;
+    width: 100%;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1); color:#fff;
+    
+}
+
+.box-header {
+    color: #444;
+    display: block;
+    padding: 10px;
+    position: relative; color:#fff;
+}
+
+.box-body {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    padding: 10px;
+}
+
+.box-header .box-title {
+    display: inline-block;
+    font-size: 20px;
+    margin: 0;
+    line-height: 1;
+}
+
+.content {
+    min-height: 250px;
+    padding: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.table>tbody>tr>td {
+     border-top: 0; }
+     
+.btn-grey {
+    color: #fff;
+    background-color: #252424;
+    border-color: #423D3D;}
+    
+ .btn-grey:hover,
+.btn-grey:focus,
+.btn-grey.focus,
+.btn-grey:active,
+.btn-grey.active,
+.open > .dropdown-toggle.btn-grey {
+  color: #fff;
+     background-color: #524E4E;
+    border-color: #615C5C;
+}
+
+.btn-grey:active,
+.btn-grey.active,
+.open > .dropdown-toggle.btn-grey {
+  background-image: none;
+}
+.btn-grey.disabled,
+.btn-grey[disabled],
+fieldset[disabled] .btn-grey,
+.btn-grey.disabled:hover,
+.btn-grey[disabled]:hover,
+fieldset[disabled] .btn-grey:hover,
+.btn-grey.disabled:focus,
+.btn-grey[disabled]:focus,
+fieldset[disabled] .btn-grey:focus,
+.btn-grey.disabled.focus,
+.btn-grey[disabled].focus,
+fieldset[disabled] .btn-grey.focus,
+.btn-grey.disabled:active,
+.btn-grey[disabled]:active,
+fieldset[disabled] .btn-grey:active,
+.btn-grey.disabled.active,
+.btn-grey[disabled].active,
+fieldset[disabled] .btn-grey.active {
+  background-color: #524E4E;
+    border-color: #615C5C;
+}
+.btn-grey .badge {
+  color: #5bc0de;
+  background-color: #fff;
+}
+
+.logo {    background-color: #fff;
+    width: 200px;
+    height: 80px;
+    padding: 20px;
+    border-radius: 10px 0 10px 0; text-align:center;}
+    
+ .endPointsScannedDiv {font-size:14px; padding-top:4px;}
+ 
+ .innertable {    background-color:#fff ; color:#000}
+ 
+ .tablescroll {min-height:150px; max-height:500px; overflow:auto;}
+ .innertable th {    background-color: #341F3E;
+    color: white;}
+    
+  tbody {    font-weight: 600;}   
+  th {text-transform: capitalize;}
+  
+/* show on mobile */
+   .mobileShow { display: none;}
+
+   /* Smartphone Portrait and Landscape */
+
+   @media only screen
+
+   and (min-device-width : 320px)
+
+   and (max-device-width : 480px){ .mobileShow { display: inline;}}
+   
+   .left-arrow { display: none;}
+
+   /* Smartphone Portrait and Landscape */
+
+   @media only screen
+
+   and (min-device-width : 320px)
+
+   and (max-device-width : 480px){ .left-arrow { display: inline;}}
+   
+     .right-arrow { display: none;}
+
+   /* Smartphone Portrait and Landscape */
+
+   @media only screen
+
+   and (min-device-width : 320px)
+
+   and (max-device-width : 480px){ .right-arrow { display: inline;}}
+/* show on mobile */       
+  
+.left-arrow {
+     width: 20px;
+    height: 20px;
+    position: relative;
+    top: -76px;
+    left: 28px;
+    opacity: 0.5;
+  }
+.right-arrow {
+     width: 20px;
+    height: 20px;
+    position: relative;
+    top: -76px;
+    right: 28px;
+    opacity: 0.5;
+	float: right;
+  } 
+  
+ .user-header {
+    background-color: #3c8dbc;
+    padding: 5px;
+    text-align: center;
+    margin: 5px;
+} 
+.user-body {
+    padding: 15px;
+    border-bottom: 1px solid #f4f4f4;
+    border-top: 1px solid #dddddd;
+}
+.user-footer {
+    background-color: rgba(31, 31, 31, 0.60);
+    padding: 10px;
+}
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    left: auto;
+    width:250px;
+        background-color:rgba(31, 31, 31, 0.60);
+}  
+.detail {color:#fff; font-size:14px; text-transform: capitalize; 
+
+}
+  .detail a:hover {color:#fff; text-decoration:underline;}
+   .detail a {color:#fff; }
+
+  
+.nav>li>a:focus, .nav>li>a:hover {
+	text-decoration: none;
+	background-color:rgba(31, 31, 31, 0.60);
+}
+ 
+ .nav .open>a, .nav .open>a:focus, .nav .open>a:hover {
+    background-color:rgba(31, 31, 31, 0.60);
+    color:#fff;
+} 
+  

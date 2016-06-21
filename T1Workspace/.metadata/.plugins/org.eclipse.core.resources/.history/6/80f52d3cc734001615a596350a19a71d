@@ -1,0 +1,1669 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- Best viewed with fixed-width (e.g., Courier) font --><xs:schema xmlns:dobtypes="http://www.tcore.com/TcoreDobTypes.xsd" xmlns:cwtypes="http://www.tcore.com/TcoreCarrierWatchTypes.xsd" xmlns:types="http://www.tcore.com/TcoreTypes.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.tcore.com/TcoreDobTypes.xsd" elementFormDefault="qualified">
+
+    <xs:import namespace="http://www.tcore.com/TcoreTypes.xsd" schemaLocation="TcoreTypes.xsd"/>
+    <xs:import namespace="http://www.tcore.com/TcoreCarrierWatchTypes.xsd" schemaLocation="TcoreCarrierWatchTypes.xsd"/>
+    <xs:annotation>
+        <xs:documentation>
+            <h2>TransCore DAT-On-Boarding XML Schema</h2>
+            <br/>
+            This schema defines the types used by DAT On-Boarding.  
+            <br/>
+            Published:  April, 2012<br/>
+            Version  :  1.0.0<br/>
+            <br/>
+            <i>Copyright (C) 2011, TransCore LP, All Rights Reserved.</i>
+            <br/>
+            <br/>
+            <br/>
+        </xs:documentation>
+    </xs:annotation>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="DobEvent">
+        <xs:annotation>
+            <xs:documentation>
+                The events that occurred for a Carrier.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="carrierId" type="types:String40" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The DAT-On-Boarding identifier for the carrier that signed contracts.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="eventTypes" type="dobtypes:EventTypes" minOccurs="1" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        The types of events that were received concerning this carrier.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="signedContracts" type="dobtypes:SignedContract" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        The contracts that this carrier signed since the date provided.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="EventTypes">
+        <xs:annotation>
+            <xs:documentation>
+                The possible types of events that may be returned.
+                    Contract Signed, One or more contracts were signed by the carrier.
+                    Profile Update, a change was made to the profile data.
+                    Insurance Agent Update, a change was made to insurance agent information.
+                    Tax Info Update, a change was made to the W9 or W8 tax information (whichever applies).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Contract Signed"/>
+            <xs:enumeration value="Profile Update"/>
+            <xs:enumeration value="Insurance Agent Update"/>
+            <xs:enumeration value="Tax Info Update"/>
+            <xs:enumeration value="Document Update"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="SignedCarrier">
+        <xs:annotation>
+            <xs:documentation>
+                The carrier identifier and contracts that have been signed by them.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="carrierId" type="types:String40" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The DAT-On-Boarding identifier for the carrier that signed contracts.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="signedContracts" type="dobtypes:SignedContract" minOccurs="1" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        The contracts that this carrier signed.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="SignedContract">
+        <xs:annotation>
+            <xs:documentation>
+                A contract and the person who electronically signed it.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="contract" type="dobtypes:Contract" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The contract that was signed.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="signatory" type="dobtypes:Signatory" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The signature information for the contract.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="signed" type="xs:dateTime" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The date the contract was signed.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="url" type="xs:anyURI" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The URL from which this contract may be downloaded.  
+                        Provided only when dobVersion&gt;1 and for contracts signed through AssureSign.
+                        Max 256 characters.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Contract">
+        <xs:annotation>
+            <xs:documentation>
+                The attributes that identify a COB Customer's contract.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="name" type="types:String100" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The Name of the contract.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="description" type="types:String100" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The description of the contract.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="version" type="types:PositiveInt" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The version of the contract.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="documentStatus" type="dobtypes:DocumentStatusTypes" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The status of the contract (Active or Inactive);
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Signatory">
+        <xs:annotation>
+            <xs:documentation>
+                The information about the person that signed the contract.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="name" type="types:String100" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The Name of person signing a contract.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="title" type="types:String100" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The title of the person signing a contract.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="DobCarrier">
+        <xs:annotation>
+            <xs:documentation>
+                All attributes for a carrier.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="lastUpdate" type="xs:dateTime" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The last date and time anything for this carrier was updated.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="carrierInfo" type="dobtypes:CarrierInfo" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The carrier identifiers, names, addresses and phone numbers.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="paymentInfo" type="dobtypes:PaymentInfo" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The payment information for this carrier.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="contactInfo" type="dobtypes:ContactInfo" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The payment information for this carrier.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="services" type="dobtypes:Services" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The services that this carrier provides.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="equipment" type="dobtypes:Equipment" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The equipment that this carrier has.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="geographicCoverage" type="dobtypes:GeographicCoverage" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The geographic areas that this carrier services.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="taxInfo" type="dobtypes:TaxInfo" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The tax information for this carrier.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="insuranceAgentInfo" type="dobtypes:InsuranceAgentInfo" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The information about the carrier's insurance agents.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="documents" type="dobtypes:Document" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        The documents that this carrier provides.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="TaxInfo">
+        <xs:annotation>
+            <xs:documentation>
+                A carrier's tax information, either W9 or W8 tax info.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="lastUpdate" type="xs:dateTime" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The last date and time the tax info was updated.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:choice>
+                <xs:element name="w9Info" type="dobtypes:W9Info">
+                    <xs:annotation>
+                        <xs:documentation>
+                            The W9 tax form information provided by the carrier.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="w8Info" type="dobtypes:W8Info">
+                    <xs:annotation>
+                        <xs:documentation>
+                            The W8 tax form information provided by the carrier.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="W9Info">
+        <xs:annotation>
+            <xs:documentation>
+                A carrier's W9 tax information.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="tin" type="types:FederalTaxIdentifier" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The federal tax id number.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="type" type="dobtypes:FederalTaxIdTypes" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The type of tax id provided, SSN or EIN.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="status" type="dobtypes:FederalTaxIdStatus" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The status of the federal tax id: Pending, Valid, or NotValid.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="name" type="types:String155">
+                <xs:annotation>
+                    <xs:documentation>
+                        The carrier name as shown on their income tax return.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="businessName" type="types:String155" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        The carrier business name/disregard entity name, if different from above.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="street" type="types:String200">
+                <xs:annotation>
+                    <xs:documentation>
+                        The street address.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="city" type="types:String50">
+                <xs:annotation>
+                    <xs:documentation>
+                        The city address.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="stateProvince" type="types:StateProvince">
+                <xs:annotation>
+                    <xs:documentation>
+                        The State or Province.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="postalCode" type="types:PostalCodePattern">
+                <xs:annotation>
+                    <xs:documentation>
+                        The Postal code.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="federalTaxClassification" type="dobtypes:FederalTaxClassification">
+                <xs:annotation>
+                    <xs:documentation>
+                        The W9 Fedearal Tax Classification.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="W8Info">
+        <xs:annotation>
+            <xs:documentation>
+                A carrier's W8 tax information.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="name" type="types:String155">
+                <xs:annotation>
+                    <xs:documentation>
+                        The name of individual or organization that is the beneficial owner.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="typeOfBeneficialOwner" type="dobtypes:FederalTaxBeneficialOwnerTypes" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The type of beneficial owner.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="permenantAddress" type="cwtypes:Location" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The permenant address.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="mailingAddress" type="cwtypes:Location" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The mailing address, if different from permenantAddress.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="foreignTaxId" type="types:String50" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The foreign tax identifying number.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="foreignTaxIdType" type="types:String3" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The type of foreign tax identifying number (BN or SIN).  Only provided when dobVersion&gt;1.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="tin" type="types:FederalTaxIdentifier" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The federal tax id number if they have one.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="type" type="dobtypes:FederalTaxIdTypes" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The type of tax id provided, SSN or EIN.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="CarrierInfo">
+        <xs:annotation>
+            <xs:documentation>
+                The general identifying attributes of a carrier.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="lastUpdate" type="xs:dateTime" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The last date and time any of the data in this section was updated.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="legalName" type="types:String155" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The legal name that this carrier operates under.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="dbaName" type="types:String155" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The Doing-Business-AS name of the carrier.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="dotNumber" type="types:NonNegativeInt" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The FMCSA DOT number assigned to this carrier.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="docket" type="cwtypes:DocketType" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The FMCSA MC/MX/FF number assigned to this carrier.
+                        <br/>
+                        DOT docket is made up of a prefix and a number.
+                        Prefix is a 2-character String.
+                        The number is a non-negative 32-bit integer. 
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="intrastate" type="cwtypes:IntrastateType" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The intrastate code given to this carrier.  Only provided if the carrier is only a 
+                        intrastate carrier.
+                        <br/>
+                        The intrastate type is made up of 
+                        1) The state the carrier is authorized to operate within. A 2-character string.
+                        2) The state's assigned operating code for this carrier. A 15-digit number.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="duns" type="dobtypes:DUNS" minOccurs="0" maxOccurs="1">
+            <xs:annotation>
+                    <xs:documentation>
+                        The 9 digit duns number for this carrier.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="scacCode" type="types:String4" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        The SCAC codes assigned to this carrier.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="website" type="xs:anyURI" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Company website URL, max 256 characters.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="physicalAddress" type="cwtypes:Location" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The physical address and phone numbers of this company.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="mailingAddress" type="cwtypes:Location" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The mailing address and phone numbers of this company.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="ContactInfo">
+        <xs:annotation>
+            <xs:documentation>
+                The payment information for a carrier.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="lastUpdate" type="xs:dateTime" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The last date and time any of the contacts were updated.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="contacts" type="dobtypes:Contact" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        List of personnel and their roles in the company.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="PaymentInfo">
+        <xs:annotation>
+            <xs:documentation>
+                The payment information for a carrier.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="lastUpdate" type="xs:dateTime" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The last date and time any of the data in this section was updated.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="remitToName" type="types:String155" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The name to make payments out to.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="remitToAddress" type="cwtypes:Location">
+                <xs:annotation>
+                    <xs:documentation>
+                        The address to send payments.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="isFactoringCompany" type="xs:boolean" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates whether or not the remit-to name and address are for a factoring company.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="interestInQuickPay" type="xs:boolean" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates interest in quick-pay plans.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="references" type="dobtypes:Reference" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        Payment references that may be contacted.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Services">
+        <xs:annotation>
+            <xs:documentation>
+                The services that the carrier provides and organizations that the carrier is a member.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="lastUpdate" type="xs:dateTime" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The last date and time any of the data in this section was updated.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="companyType" type="dobtypes:CompanyTypes" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The type of company this is.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="yearFounded" type="types:Year" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The year the company was founded.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="womanOwned" type="xs:boolean" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier is owned by a woman.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="veteranOwned" type="xs:boolean" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier is owned by a military veteran.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="disabledVeteranOwned" type="xs:boolean" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier is owned by a disabled military veteran.  
+                        Only provided when dobVersion&gt;1 is specified.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="minorityOwnership" type="dobtypes:MinorityOwnership" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier is owned by a minority.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="isSmartwayCarrier" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier is a Smartway carrier.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="isHazmatCertified" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier is hazmat certified.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="isRadioActiveCertified" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier is certified to carry radioactive material.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="isAceCertified" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier is certified by ACE.
+                        <br/>
+                        Boolean type.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="isCtpatMember" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier is C-TPAT Member.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="isTwicCardholder" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier is a TWIC Cardholder.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="isTsaRegistered" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier is TSA Registered.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="isResponsibleCareCarrier" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier is a responsible care carrier.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="carbCompliantTRUs" type="xs:boolean" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if 100% of a carrier's Transport Refrigeration Units (TRU) are compliant with 
+                        California's air quality regulations.  Only provided if dobVersion&gt;1 is specified.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="fastCode" type="types:String14" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The carrier's FAST Code.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="csaCode" type="types:String4" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The carrier's CSA Code.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="iacCertification" type="dobtypes:IAC" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The carrier's IAC information.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="isUPSCarrier" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier carries for UPS.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="handlesRailDryage" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier handles rail Dryage.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="handlesPortDryage" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier handles Port Dryage.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hasLTLCapabilities" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier has LTL capabilities.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="handlesExpeditedGround" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier provides expedited ground services.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="handlesAirFreightCartage" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier handles air freight cartage.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="handlesEdi" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier can handle EDI.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="handlesOversizeLoads" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier can handle extra wide, long or heavy loads.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hasSpottedTrailers" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier has spotted trailers.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hasCarbCompliantTrucks" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier uses CARB compliant trucks.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="doesTrailerInterchange" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier does trailer interchanges.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="doesPalletExchange" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier does pallet exchanges.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="doesMultiStops" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if carrier will make multiple stops.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="doesParcels" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier deals with Parcels.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="doesBrokerage" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier also has brokerage services.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="brokerDocket" type="cwtypes:DocketType" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The broker docket number, if the carrier also has brokerage services.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="otherServices" type="types:String256" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Other services that the carrier provides.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="airports" type="types:String50" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        The airports this carrier services.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="ports" type="types:String50" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        The ports this carrier services.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Equipment">
+        <xs:annotation>
+            <xs:documentation>
+                The attributes of the Fleet section of the profile.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="lastUpdate" type="xs:dateTime" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The last date and time any of the data in this section was updated.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="numberOfPowerUnits" type="xs:int" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The number of power units the carrier has.
+                        <br/>
+                        A signed 32-bit integer.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="numberOfTeams" type="xs:int" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The number of teams the carrier has.
+                        <br/>
+                        A signed 32-bit integer.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="numberOfCompanyDrivers" type="xs:int" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The number of company drivers the carrier has.
+                        <br/>
+                        A signed 32-bit integer.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="numberOfOwnerOperators" type="xs:int" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The number of owner operators that use their own authority, that the carrier works with.
+                        <br/>
+                        A signed 32-bit integer.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="onBoardCommunications" type="dobtypes:CommunicationTypes" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The method used to communicate with the drivers. (Satelite, Cell, or Pager).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="trailers" type="dobtypes:Trailer" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        The types and number of trailers that a carrier has.
+                        <br/>
+                        Consisted of two parts:
+                        <br/>
+                        1) The type of trailer Van, Reefer, or Flatbed. - A 6-15 character String.
+                        <br/>
+                        2) The number of this type of trailer. - A signed 32-bit integer.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hasAirRide" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier has air ride trailers.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hasVented" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier has vented trailers.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hasHotshot" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier has hot shot trailers.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hasCurtains" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier has curtains.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hasInsulated" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier has insulated trailers.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hasConestoga" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier has conestoga trailers.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hasCoilRacks" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier has coil racks.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hasContainerLocks" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier has container locks.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hasTarps" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier has tarps.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hasEtrac" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier has ETRAC.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hasGarmentRacks" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier has garment racks.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hasPadWrap" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier has pad wrap.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hasStraps" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier has straps.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="hasChains" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates if the carrier has chains.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="GeographicCoverage">
+        <xs:annotation>
+            <xs:documentation>
+                The attributes of the Geographic section of the profile.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="lastUpdate" type="xs:dateTime" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The last date and time any of the data in this section was updated.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="serviceInMexico" type="xs:boolean" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Indicates service to the carrier provides service in Mexico.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="operatingStateProvince" type="types:StateProvince" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        List of US states and Canadian provinces that the carrier operates within.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="lanes" type="cwtypes:LaneType" minOccurs="0" maxOccurs="10">
+                <xs:annotation>
+                    <xs:documentation>
+                        Lists the lanes that the carrier operates within.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="IAC">
+        <xs:annotation>
+            <xs:documentation>
+                IAC certification.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="iacCode" type="types:String20" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="expires" type="xs:date" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="MinorityOwnership">
+        <xs:annotation>
+            <xs:documentation>
+                A carrier's minority ownership information.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="minorityOwned" type="dobtypes:MinorityOwned" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="nmsdcCertified" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="certificateNumber" type="types:String20" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="regionalCouncil" type="types:String100" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="MinorityOwned">
+        <xs:annotation>
+            <xs:documentation>
+                The types of minority ownership of a business.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Not Minority Owned"/>
+            <xs:enumeration value="Asian Pacific"/>
+            <xs:enumeration value="African American"/>
+            <xs:enumeration value="Hispanic"/>
+            <xs:enumeration value="Asian-Indian American"/>
+            <xs:enumeration value="Native American Indian"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="CommunicationTypes">
+        <xs:annotation>
+            <xs:documentation>
+                The types of on-board communications that a carrier has.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Not Specified"/>
+            <xs:enumeration value="Cell"/>
+            <xs:enumeration value="Satellite"/>
+            <xs:enumeration value="Pager"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="DUNS">
+        <xs:annotation>
+            <xs:documentation>
+                Upto 9 digit duns number.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:int">
+            <xs:minInclusive value="1"/>
+            <xs:maxInclusive value="999999999"/>
+        </xs:restriction>
+    </xs:simpleType>
+     <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Contact">
+        <xs:annotation>
+            <xs:documentation>
+                A carrier's contact information.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="role" type="types:String30" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        A carrier's contact's role.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="name" type="types:String155" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        A carrier's contact's name.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="title" type="types:String50" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        A carrier's contact's title.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="phone" type="types:PhoneNumber" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="fax" type="types:PhoneNumber" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="email" type="types:EmailAddress" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        A carrier's contact's email address.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="isPrimaryContact" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Reference">
+        <xs:annotation>
+            <xs:documentation>
+                A carrier's reference information.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="companyName" type="types:String155" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="contactName" type="types:String155" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="phone" type="types:PhoneNumber" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="TrailerTypes">
+        <xs:annotation>
+            <xs:documentation>
+                The types of trailers that a carrier may have.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Van 48ft"/>
+            <xs:enumeration value="Reefer 48ft"/>
+            <xs:enumeration value="Flatbed 48ft"/>
+            <xs:enumeration value="Van 53ft"/>
+            <xs:enumeration value="Reefer 53ft"/>
+            <xs:enumeration value="Flatbed 53ft"/>
+            <xs:enumeration value="Auto Carrier"/>
+            <xs:enumeration value="Cargo Van"/>
+            <xs:enumeration value="Container"/>
+            <xs:enumeration value="Double Drop"/>
+            <xs:enumeration value="Drop/Step"/>
+            <xs:enumeration value="Dump Trailer"/>
+            <xs:enumeration value="Hopper Bottom"/>
+            <xs:enumeration value="Lowboy"/>
+            <xs:enumeration value="Moving Van"/>
+            <xs:enumeration value="Straight Truck"/>
+            <xs:enumeration value="Stretch Trailer"/>
+            <xs:enumeration value="Tanker"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Trailer">
+        <xs:annotation>
+            <xs:documentation>
+                The number of trailers that a carrier has.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="trailerType" type="dobtypes:TrailerTypes">
+                <xs:annotation>
+                    <xs:documentation>
+                        The type of trailer Van, Reefer, or Flatbed.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="numberOf" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation>
+                        The number of this type of trailer.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+     <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Document">
+        <xs:annotation>
+            <xs:documentation>
+                A carrier document.  Usually validation of capabilities of the carrier like Hazmat, smartway, or 
+                CTPAT certificates.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="created" type="xs:dateTime" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The date and time the document was created.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="documentType" type="types:String20" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The type of document (Hazmat, Smartway or  CTPAT)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="fileName" type="types:String100" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The name of the file that the document is stored in.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="fileExtension" type="types:String4" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The file extension that the document is stored in.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>            
+            <xs:element name="documentName" type="types:String100" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The name of the document.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="description" type="types:String100" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        A description of the document 
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="url" type="xs:anyURI" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The URL from which this document may be downloaded.  Not provided for inactive documents.
+                        max 256 characters.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="DocumentStatusTypes">
+        <xs:annotation>
+            <xs:documentation>
+                The valid status types of of a document or contract.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Active"/>
+            <xs:enumeration value="Inactive"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="FederalTaxClassification">
+        <xs:annotation>
+            <xs:documentation>
+                The federal tax classification on form W-9. Either limited liability or other classification types.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="classificationType" type="dobtypes:FederalTaxClassificationTypes">
+                <xs:annotation>
+                    <xs:documentation>
+                        The simple tax classifications of the W-9 tax form.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="limitedLiabilityType" type="dobtypes:LimitedLiabilityCompany">
+                <xs:annotation>
+                    <xs:documentation>
+                        The special limited liability company tax classification, which 
+                        requires further describes the tax classification.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="CompanyTypes">
+        <xs:annotation>
+            <xs:documentation>
+                The valid company types under the services section.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Corporation"/>
+            <xs:enumeration value="Partnership"/>
+            <xs:enumeration value="Sole Proprietorship"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="LimitedLiabilityCompany">
+        <xs:annotation>
+            <xs:documentation>
+                The valid limited liability company types on a W9 tax form.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="C Corporation"/>
+            <xs:enumeration value="S Corporation"/>
+            <xs:enumeration value="Partnership"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="FederalTaxBeneficialOwnerTypes">
+        <xs:annotation>
+            <xs:documentation>
+                The valid types of beneficial owners on a W8BEN tax form.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Individual"/>
+            <xs:enumeration value="Corporation"/>
+            <xs:enumeration value="Disregarded"/>
+            <xs:enumeration value="Partnership"/>
+            <xs:enumeration value="Simple trust"/>
+            <xs:enumeration value="Grantor Trust"/>
+            <xs:enumeration value="Complex trust"/>
+            <xs:enumeration value="Estate"/>
+            <xs:enumeration value="Government"/>
+            <xs:enumeration value="International organization"/>
+            <xs:enumeration value="Central bank of issue"/>
+            <xs:enumeration value="Tax-exempt organization"/>
+            <xs:enumeration value="Private foundation"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="FederalTaxClassificationTypes">
+        <xs:annotation>
+            <xs:documentation>
+                The valid federal tax classification types on a W9 tax form.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Individual/sole proprietor"/>
+            <xs:enumeration value="C Corporation"/>
+            <xs:enumeration value="S Corporation"/>
+            <xs:enumeration value="Partnership"/>
+            <xs:enumeration value="Trust/estate"/>
+            <xs:enumeration value="Exempt payee"/>
+            <xs:enumeration value="Other"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="FederalTaxIdTypes">
+        <xs:annotation>
+            <xs:documentation>
+                The valid tax id types EIN or SSN.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="EIN"/>
+            <xs:enumeration value="SSN"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="FederalTaxIdStatus">
+        <xs:annotation>
+            <xs:documentation>
+                The status of a carrier's TIN and Legal name pairing.<br/>
+                    Pending - Waiting to be validated.<br/>
+                    Valid - Is a valid tax id and legal name pairing.<br/>
+                    NotValid - Has been checked and is not a valid tax id and legal name pairing.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Pending"/>
+            <xs:enumeration value="Valid"/>
+            <xs:enumeration value="NotValid"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="InsuranceAgentInfo">
+        <xs:annotation>
+            <xs:documentation>
+                A carrier's insurance agent information.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="lastUpdate" type="xs:dateTime" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The last date and time the insurance agent information was updated.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="agents" type="dobtypes:InsuranceAgent" minOccurs="1" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        The types of coverage this agent provides.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="InsuranceAgent">
+        <xs:annotation>
+            <xs:documentation>
+                A carrier's insurance agent contact information.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="coverageType" type="dobtypes:CoverageTypes" minOccurs="1" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        The types of coverage this agent provides.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="agent" type="types:String90" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The name of the insurance agent's company.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="phone" type="types:PhoneNumber" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The phone number of the insurance agent.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="fax" type="types:PhoneNumber" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        The fax number for the insurance agent.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="CoverageTypes">
+        <xs:annotation>
+            <xs:documentation>
+                The different insurance coverage types of interest in DAT on boarding.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="CARGO"/>
+            <xs:enumeration value="AUTO"/>
+            <xs:enumeration value="GENERAL"/>
+            <xs:enumeration value="WORKERS_COMP"/>
+        </xs:restriction>
+    </xs:simpleType>
+ </xs:schema>

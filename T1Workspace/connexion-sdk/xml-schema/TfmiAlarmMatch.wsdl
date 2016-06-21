@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions 
+    targetNamespace="http://www.tcore.com/TfmiAlarmMatch.wsdl" 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:tfmi="http://www.tcore.com/TfmiFreightMatching.xsd"
+    xmlns:message="http://www.tcore.com/TcoreMessage.xsd"
+    xmlns:types="http://www.tcore.com/TcoreTypes.xsd"
+    xmlns:tfmialarm="http://www.tcore.com/TfmiAlarmMatch.xsd"
+    xmlns:tfmialarmwsdl="http://www.tcore.com/TfmiAlarmMatch.wsdl">
+
+       <wsdl:types>
+      <xs:schema elementFormDefault="qualified" targetNamespace="tfmiwsdl">
+         <xs:import namespace="http://www.tcore.com/TfmiAlarmMatch.xsd" schemaLocation="TfmiAlarmMatch.xsd"></xs:import>
+      </xs:schema>
+   </wsdl:types>
+
+   <wsdl:message name="alarmMatchNotification">
+      <wsdl:part name="request" element="tfmialarm:alarmMatchNotification"/>
+   </wsdl:message>
+   <wsdl:message name="alarmTerminationNotification">
+      <wsdl:part name="request" element="tfmialarm:alarmTerminationNotification"/>
+   </wsdl:message>
+   <wsdl:message name="alarmResponse">
+      <wsdl:part name="response" element="tfmialarm:alarmResponse"/>
+   </wsdl:message>
+
+   <wsdl:portType name="TfmiAlarmMatchPortType">
+      <wsdl:operation name="AlarmMatchNotification">
+         <wsdl:input message="tfmialarmwsdl:alarmMatchNotification"/>
+         <wsdl:output message="tfmialarmwsdl:alarmResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="AlarmTerminationNotification">
+         <wsdl:input message="tfmialarmwsdl:alarmTerminationNotification"/>
+         <wsdl:output message="tfmialarmwsdl:alarmResponse"/>
+      </wsdl:operation>
+   </wsdl:portType>
+
+   <wsdl:binding name="TfmiAlarmMatchSoapBinding" type="tfmialarmwsdl:TfmiAlarmMatchPortType">
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"></soap:binding>
+      <wsdl:operation name="AlarmMatchNotification">
+         <soap:operation soapAction="http://www.tcore.com/TfmiAlarmMatch.wsdl/AlarmMatchNotification" style="document"/>
+         <wsdl:input>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="AlarmTerminationNotification">
+         <soap:operation soapAction="http://www.tcore.com/TfmiAlarmMatch.wsdl/AlarmTerminationNotification" style="document"/>
+         <wsdl:input>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+
+   <wsdl:service name="TfmiAlarmMatchService">
+      <wsdl:port name="TfmiAlarmMatchService" binding="tfmialarmwsdl:TfmiAlarmMatchSoapBinding">
+         <soap:address location="http://localhost:8080/TfmiAlarmMatch"/>
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,3596 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- $Id: TcoreTypes.xsd 18455 2014-08-15 18:19:49Z timd $ --><xs:schema xmlns:types="http://www.tcore.com/TcoreTypes.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.tcore.com/TcoreTypes.xsd" elementFormDefault="qualified">
+    <xs:annotation>
+        <xs:documentation>
+            <h2>TcoreTypes Schema</h2>
+            <br/>
+
+            This schema defines a set of standard type definitions for general use by other TransCore schema.  
+            It should normally be included in all other TransCore schema to avoid multiple definitions or potential namespace 
+            conflicts.<br/>
+            <br/>
+            <hr/>
+            <h3>Interface Overview</h3>
+            <br/>
+            The majority of requests and responses supported by this system follow one of a series of general patterns.  
+            This overview briefly describes these patterns as well as the overall structure of requests and responses.<br/>
+            <br/>
+            <b>
+            <u>Requests</u>
+            </b>
+            <br/>
+            This interface supports a request/response protocol.  Users of the interface construct requests and submit them 
+            to the system.  The system processes the request, generates a response, and delivers the response to the requestor. <br/>
+            <br/>
+            All requests follow a standard naming pattern, the request names are constructed by concatenating the type of 
+            request [create, update, cancel, lookup], the item affected by the request [alarm, asset, company, user, etc...], and 
+            appending the word 'Request'.  So, the name of a request to <em>create</em> a new <em>alarm</em> is 
+            <em>createAlarmRequest</em> and the name of a request to <em>update</em> an existing <em>company</em> is 
+            <em>updateCompanyRequest</em>.<br/>
+            <br/>
+            Each request contains one or more operations.  The operations contain the information specific to the request.  
+            Operations are named in a similar way to the requests, with the word <em>Operation</em> appended instead of 
+            Request.  So, the operation associated with a <em>createAlarmRequest</em> is the <em>createAlarmOperation</em>.<br/>
+            <br/>
+            <b>
+                <u>Responses</u>
+            </b>
+            <br/>
+            Every request has an associated response.  The responses follow a naming pattern similar to requests, with the word 
+            Response appended instead of Request.  So, the response to a <em>createAlarmRequest</em> is a 
+            <em>createAlarmResponse</em>.<br/>
+            <br/>
+            Each response contains a Result.  The results contain the outcome of the system's attempt to process a request. 
+            Results will contain either success data or error data.
+            <ul>
+                <li>SuccessData   may contain warnings (code and message text) and/or other data indicating the request was 
+                successfully processed.  The content of the success data varies depending on the nature of the request.  The 
+                <em>SuccessData</em> component is named using a similar convention to requests, except the words SuccessData 
+                are appended instead of Request.  So, the success data for a <em>createAlarmRequest</em> is called 
+                <em>createAlarmSuccessData</em>
+                </li>
+                <li>ServiceError will contain a fault code, and a message describing the nature of the error.</li>
+            </ul>
+            The common request types, and their default behavior are described below:<br/>
+            <br/>
+            <b>
+                <u>Create/Setup</u>
+            </b>
+            <br/>
+            When creating a new item, the system will return the unique identifier of the item in the success data portion of the response.
+            The requestor may also choose to receive a copy of the newly created item by setting the <em>include</em> element to 
+            <em>true</em> in the request.<br/>
+            <br/>
+            For example: when making a CreateUser request, setting the includeUser element to <em>true</em> would cause the 
+            system assigned userId and a copy of the created user to be returned in the success data.<br/>
+            <br/>
+            <b>
+                <u>Update</u>
+            </b>
+            <br/>
+            When updating an item, the requestor must provide the unique identifier of the item to be updated.
+            Except for the unique identifier, the elements in an update that are required will be updated with the data provided.<br/>
+            <br/>
+            When requesting an update, optional components (i.e. where minOccurs = 0), will behave as follows:
+            <ul>
+                <li> If the optional component is present in the request, the corresponding data will be updated</li>
+                <li> If the optional component is present and is empty,  the corresponding data will be removed</li>
+                <li> If the optional component is excluded from the request, no changes will be made to the
+                     corresponding data</li>
+            </ul>
+            When updating an item, the requestor may receive a copy of the updated item by setting the <em>include</em> element 
+            to true in the request.  If the <em>include</em> element is not set to <em>true</em>, a successful update will return an 
+            empty success data component.<br/>
+            <br/>
+            <b>
+                <u>Cancel/Delete</u>
+            </b>
+            <br/>
+            When canceling or deleting an item, the requestor must provide the unique identifier of the item to be removed. A 
+            successful request will return an empty success data component.<br/>
+            <br/>
+            <b>
+                <u>Lookup</u>
+            </b>
+            <br/>
+            There are two general methods for looking up information:
+            <ol>
+                <li>looking up a specific item using a <em>unique identifier</em>, this will always return a single result (or an error)</li>
+                <li>querying with search criteria, this may return multiple results (one, or more)</li>
+            </ol>
+            <u>When querying by a <em>unique identifier</em>:</u>
+            <br/>
+            If a match is found, the requestor will receive success data that contains the item requested.  In addition, when making the 
+            request the requestor may be able to specify optional components to be returned in the success data.  These are specified
+            by setting the corresponding <em>include</em> elements to <em>true</em> in the request.<br/>
+            <br/>
+            For example, when making a <em>LookupCompanyRequest</em>, the requestor might choose to set 
+            <em>includeUsers</em> to <em>true</em>.  This will cause the system to include the list of users associated with the 
+            company in the success data of the response.  If no matching item is found, the system will return error data.<br/>
+            <br/>
+            <u>When querying using <em>search criteria</em>:</u>
+            <br/>
+            If one or more matches are found, the requestor will receive success data that has one or more of the items they were looking 
+            for.  If a match is not found, the system will return empty success data.<br/>
+            <br>
+            </br>
+            <hr/>
+            <br/>
+            Published:  August, 2004<br/>
+            Version  :  1.1.0<br/>
+            <br/>
+            <i>Copyright (C) 2004-2008, TransCore LP, All Rights Reserved.</i>
+            <br/>
+            <br/>
+            <br/>
+        </xs:documentation>
+    </xs:annotation>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="FaultCode">
+        <xs:annotation>
+            <xs:documentation>
+                Fault codes which enumerate the type of error or warning which resulted in a TcoreFault being generated. <br/>
+                <ul>
+                    <li>
+                        <em>RequiredFieldMissing</em> - A data field required to fulfill this request was missing.  Corrective action:  
+                        Provide all required fields and resubmit the request.</li>
+                    <li>
+                        <em>InvalidData</em> - The request could not be processed due to invalid data.  For example, a request was 
+                        made to create a company with a company name which already exists.  
+                        Corrective action: Change the company name and resubmit the request.</li>
+                    <li>
+                        <em>ValueOutOfRange</em> - Not currently used.</li> 
+                    <li>
+                        <em>EntityNotFound</em> - The requested object could not be found.</li>
+                    <li>
+                        <em>NoCapability</em> - The current user was not authorized to perform the requested operation.  
+                        Corrective action: Contact your system administrator to receive the proper authorization.</li>
+                    <li>
+                        <em>ConcurrentModification</em> - An update was made by another process to the same object(s) as those being 
+                        modified by this request.  
+                        Corrective action: resubmit the request.</li>
+                    <li>
+                        <em>InvalidSession</em> - Not currently used.</li>
+                    <li>
+                        <em>SessionTimeout</em> - The session certificate provided with this request has timed out. 
+                        Corrective action: The user must reauthenticate before any requests can be processed.</li>
+                    <li>
+                        <em>InvalidDocument</em> - There was a syntactical error in the format of the request document and it could not be 
+                        read correctly.</li>
+                    <li>
+                        <em>InvalidAuthentication</em> - The session certificate provided with a request was not valid. 
+                        Corrective action: The user must reauthenticate before any requests can be processed.</li>
+                    <li>
+                        <em>DatabaseException</em> - An error occurred in the database during the processing of this request and it could 
+                        not be completed.  
+                        Corrective action: The request should be resubmitted.</li>
+                    <li>
+                        <em>ServiceNotAvailable</em> - A service required to process the request successfully was temporarily unavailable.  
+                        Corrective action: The request should be resubmitted.</li>
+                    <li>
+                        <em>ServiceException</em> - An unexpected error occurred while processing this request.  Some form of intervention 
+                        may be required by TransCore to resolve the issue.</li>
+                    <li>
+                        <em>IgnoredField</em> - Data was provided in a field that is not needed to fulfill a request.  This is only a warning and 
+                        does not affect the completion of a request.</li>
+                </ul>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="RequiredFieldMissing"/>
+            <xs:enumeration value="InvalidData"/>
+            <xs:enumeration value="ValueOutOfRange"/>
+            <xs:enumeration value="EntityNotFound"/>
+            <xs:enumeration value="NoCapability"/>
+            <xs:enumeration value="ConcurrentModification"/>
+            <xs:enumeration value="InvalidSession"/>
+            <xs:enumeration value="SessionTimeout"/>
+            <xs:enumeration value="InvalidDocument"/>
+            <xs:enumeration value="InvalidAuthentication"/>
+            <xs:enumeration value="DatabaseException"/>
+            <xs:enumeration value="ServiceNotAvailable"/>
+            <xs:enumeration value="ServiceException"/>
+            <xs:enumeration value="IgnoredField"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="CsbSequenceId">
+        <xs:annotation>
+            <xs:documentation>
+                Monotonically increasing sequencer.  Useful for concurrency tracking.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:NonNegativeInt"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <!--                                 Request/Response Layout                                     -->
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Operation">
+        <xs:annotation>
+            <xs:documentation>
+                The base type for an operation
+            </xs:documentation>
+        </xs:annotation>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="operations" type="types:Operation"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Result">
+        <xs:annotation>
+            <xs:documentation>
+                The base type for a result
+            </xs:documentation>
+        </xs:annotation>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="results" type="types:Result"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Data">
+        <xs:annotation>
+            <xs:documentation>
+                The base type for data
+            </xs:documentation>
+        </xs:annotation>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="data" type="types:Data"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="ServiceError">
+        <xs:complexContent>
+            <xs:extension base="types:Data">
+                <xs:sequence>
+                    <xs:element name="code" type="types:NonNegativeInt"/>
+                    <xs:element name="faultCode" type="types:FaultCode" minOccurs="0"/>
+                    <xs:element name="name" type="types:String32"/>
+                    <xs:element name="message" type="types:String1024">
+                        <xs:annotation>
+                            <xs:documentation>
+                               Message provides a detailed description of the fault.  It is 
+                               intended to clarify the more general information indicated 
+                               by the <i>code</i>
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="detailedMessage" type="types:String8192" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="serviceError" type="types:ServiceError"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="ErrorMessages">
+        <xs:sequence>
+            <xs:element name="serviceError" type="types:ServiceError" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="errorMessages" type="types:ErrorMessages"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="SuccessData">
+        <xs:complexContent>
+            <xs:extension base="types:Data">
+                <xs:sequence>
+                    <xs:element name="warnings" type="types:Warning" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>
+                                In some cases, a successful result will be returned with warnings, indicating non-fatal issues such as fields 
+                                which were ignored or modified in processing.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="successData" type="types:SuccessData"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Warning">
+        <xs:sequence>
+            <xs:element name="code" type="types:FaultCode"/>
+            <xs:element name="message" type="types:String512">
+                <xs:annotation>
+                    <xs:documentation>
+                               Message provides a detailed description of the fault.  It is intended to clarify the more general information 
+                               indicated by the <em>code</em>
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <!--                                   Supporting Definitions                                     -->
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="ConnectionInfo">
+        <xs:sequence>
+            <xs:element name="description" type="types:String23"/>
+            <xs:element name="protocol" type="types:String23">
+                <xs:annotation>
+                    <xs:documentation>
+                        Examples might be: hyperbus, ftp, http, etc
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="id" type="types:String23" minOccurs="0"/>
+            <xs:element name="uri" type="types:String50"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:simpleType name="SourceOrganization">
+        <xs:annotation>
+            <xs:documentation>
+                Describes/classifies the relationship of an organization with respect to TransCore.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String32"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="SourceApplication">
+        <xs:annotation>
+            <xs:documentation>
+                Normally, the application a request is coming from, may also represent the source of an asset.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String32"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="UserTimeStamp">
+        <xs:sequence>
+            <xs:element name="user" type="types:UserId"/>
+            <xs:element name="date" type="types:UTC"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="PrivateNetwork">
+        <xs:annotation>
+            <xs:documentation>
+                ID of a Private Network (in the freight matching sense).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String30"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="CompanyName">
+        <xs:restriction base="types:String50"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="CompanyType">
+        <xs:annotation>
+            <xs:documentation>
+                All Companies fall into one or more of these general classifications.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Agent"/>
+            <xs:enumeration value="Broker"/>
+            <xs:enumeration value="Broker/Carr"/>
+            <xs:enumeration value="Carrier"/>
+            <xs:enumeration value="Driver"/>
+            <xs:enumeration value="Freight/Fwdr"/>
+            <xs:enumeration value="Other"/>
+            <xs:enumeration value="Shipper"/>
+            <xs:enumeration value="Transport"/>
+            <xs:enumeration value="Truck Stop"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="SCAC">
+        <xs:annotation>
+            <xs:documentation>
+                Standard Carrier Alpha Code.<br/>
+                Each carrier has a unique SCAC code assigned/maintained by the National Motor Freight Association, and is an ANSI 
+                standard.  The use of SCACs is very common, and even mandated by some governmental agencies on their 
+                forms/communications.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String4"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="CompanyId">
+        <xs:annotation>
+            <xs:documentation>
+                The Id of a company, to which Users belong.
+                All Users must belong to only one Company.  This Id is unique among all companies across all of TransCore.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:NonNegativeInt"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="OfficeId">
+        <xs:annotation>
+            <xs:documentation>
+                ID of an office, to which Users belong.
+                All Users must belong to only one Office.
+                All Offices must belong to only one Company.
+                This Id is unique among all offices of a company.  This means
+                that multiple companies may have the same office Ids (although
+                it would be much smarter if office Ids were unique across TransCore).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:NonNegativeInt"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="OfficeName">
+        <xs:restriction base="types:String50"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="UserId">
+        <xs:annotation>
+            <xs:documentation>
+                A universal ID for a user.
+                <ol>
+                    <li>It represents a single user, not an office or company.</li>
+                    <li>It is, and must be, unique across all of TransCore.</li>
+                </ol>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:NonNegativeInt"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="GroupId">
+        <xs:annotation>
+            <xs:documentation>
+                A universal ID for a group.  A user can belong to one and only one group.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:NonNegativeInt"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="Capabilities">
+        <xs:annotation>
+            <xs:documentation>
+                The encoded capabilities information.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:base64Binary"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="RegistryLookupId">
+        <xs:annotation>
+            <xs:documentation>
+                The registry lookup Id is a customer unique handle used to retrieve profiles and other information from
+                the TransCore Registry.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String20"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="HyperbusAgentId">
+        <xs:annotation>
+            <xs:documentation>
+                Hyperbus agent ID.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String23"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="HyperbusUri">
+        <xs:annotation>
+            <xs:documentation>
+            Hyperbus location in the format, "hbus://{address}:{port}"
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String256"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="CustomerDirectoryId">
+        <xs:annotation>
+            <xs:documentation>
+                The customer directory Id is a customer unique handle used to retrieve profiles and other information from
+                the TransCore Customer Directory.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String20"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="LoginId">
+        <xs:annotation>
+            <xs:documentation>
+                CSB login Id.  Must be between 4 and 16 characters long and consist entirely of lower or upper case
+                letters, digits, and/or the underscore character.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="4"/>
+            <xs:maxLength value="16"/>
+            <xs:pattern value="[a-zA-Z0-9_]+"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="NoMinPassword">
+        <xs:restriction base="types:String30"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="Password">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="4"/>
+            <xs:maxLength value="30"/>
+            <xs:pattern value="[a-zA-Z0-9\p{P}$\^\+=~`|]+"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="HashedPassword">
+        <xs:annotation>
+            <xs:documentation>
+                Assuming MD5 hash algorithm which produces a 32 digit hexadecimal number
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:length value="32" fixed="true"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="PasswordChoice">
+        <xs:sequence>
+            <xs:choice>
+                <xs:element name="clear" type="types:Password"/>
+                <xs:element name="hashed" type="types:HashedPassword"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType> 
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="PriceClass">
+        <xs:annotation>
+            <xs:documentation>
+            Price class associated with transactional orders.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="2"/>
+            <xs:maxLength value="2"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="PromotionCode">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="30"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="Affiliate">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="16"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="AffiliateMemberId">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="16"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="FileId">
+        <xs:annotation>
+            <xs:documentation>
+                A unique identifier for a file stored in the CSB datastore.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:NonNegativeInt"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <!--                                   Geographic Definitions                                     -->
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="Latitude">
+        <xs:annotation>
+            <xs:documentation>
+                Represents the Latitude portion of a coordinate.<br/>
+                <b>NOTE:</b> Coordinate values are limited to North America.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:float">
+            <xs:minInclusive value="13.00"/>
+            <xs:maxInclusive value="86.00"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="Longitude">
+        <xs:annotation>
+            <xs:documentation>
+                Represents the Longitude portion of a coordinate.<br/>
+                <b>NOTE:</b> Coordinate values are limited to North America.
+                <p>
+                TransCore uses the international convention of negative longitude
+                values west of the Greenwich Prime Meridian.  This may cause
+                nominal conversion hassle for some TransCore legacy programs.
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:float">
+            <xs:minInclusive value="-177.00"/>
+            <xs:maxInclusive value="-52.00"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="Direction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="E"/>
+            <xs:enumeration value="NE"/>
+            <xs:enumeration value="N"/>
+            <xs:enumeration value="NW"/>
+            <xs:enumeration value="W"/>
+            <xs:enumeration value="SW"/>
+            <xs:enumeration value="S"/>
+            <xs:enumeration value="SE"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="StateProvince">
+        <xs:annotation>
+            <xs:documentation>
+                TransCore list of recognized state/provinces codes for the United States, Canada, and Mexico.
+                <p>
+                The United States and Canada abbreviations are those used by the United States Postal Service and
+                Canada Post, with the exception that we still use pre-2002 codes for Quebec and Newfoundland, for
+                consistency with certain current TransCore products and to avoid conflicts with Mexican codes.
+                </p>
+                <p>
+                    <b>NOTE:</b> Mexican state codes do not have an official standard.  We use those codes that are in the
+                preponderance of use by North American businesses.
+                </p>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String2">
+            <xs:minLength value="2"/>
+            <xs:enumeration value="AB" id="Alberta"/>
+            <xs:enumeration value="AG" id="Aguascalientes"/>
+            <xs:enumeration value="AK" id="Alaska"/>
+            <xs:enumeration value="AL" id="Alabama"/>
+            <xs:enumeration value="AS" id="American_Samoa"/>
+            <xs:enumeration value="AZ" id="Arizona"/>
+            <xs:enumeration value="AR" id="Arkansas"/>
+            <xs:enumeration value="BC" id="British_Columbia"/>
+            <xs:enumeration value="BJ" id="Baja_California"/>
+            <xs:enumeration value="BS" id="Baja-California"/>
+            <xs:enumeration value="CA" id="California"/>
+            <xs:enumeration value="CH" id="Chiapas"/>
+            <xs:enumeration value="CI" id="Chihuahua"/>
+            <xs:enumeration value="CL" id="Colima"/>
+            <xs:enumeration value="CO" id="Colorado"/>
+            <xs:enumeration value="CP" id="Campeche"/>
+            <xs:enumeration value="CT" id="Connecticut"/>
+            <xs:enumeration value="CU" id="Coahuila"/>
+            <xs:enumeration value="DC" id="District_of_Columbia"/>
+            <xs:enumeration value="DE" id="Delaware"/>
+            <xs:enumeration value="DF" id="Distrito_Federale"/>
+            <xs:enumeration value="DG" id="Durango"/>
+            <xs:enumeration value="EM" id="Estado_Mexico"/>
+            <xs:enumeration value="FL" id="Florida"/>
+            <xs:enumeration value="GA" id="Georgia"/>
+            <xs:enumeration value="GJ" id="Guanajuato"/>
+            <xs:enumeration value="GR" id="Guerrero"/>
+            <xs:enumeration value="GU" id="Guam"/>
+            <xs:enumeration value="HG" id="Hidalgo"/>
+            <xs:enumeration value="HI" id="Hawaii"/>
+            <xs:enumeration value="IA" id="Iowa"/>
+            <xs:enumeration value="ID" id="Idaho"/>
+            <xs:enumeration value="IL" id="Illinois"/>
+            <xs:enumeration value="IN" id="Indiana"/>
+            <xs:enumeration value="JA" id="Jalisco"/>
+            <xs:enumeration value="KS" id="Kansas"/>
+            <xs:enumeration value="KY" id="Kentucky"/>
+            <xs:enumeration value="LA" id="Louisiana"/>
+            <xs:enumeration value="MA" id="Massachusetts"/>
+            <xs:enumeration value="MB" id="Manitoba"/>
+            <xs:enumeration value="MD" id="Maryland"/>
+            <xs:enumeration value="ME" id="Maine"/>
+            <xs:enumeration value="MH" id="Michoacan"/>
+            <xs:enumeration value="MI" id="Michigan"/>
+            <xs:enumeration value="MN" id="Minnesota"/>
+            <xs:enumeration value="MO" id="Missouri"/>
+            <xs:enumeration value="MR" id="Morelos"/>
+            <xs:enumeration value="MS" id="Mississippi"/>
+            <xs:enumeration value="MT" id="Montana"/>
+            <xs:enumeration value="NA" id="Nayarit"/>
+            <xs:enumeration value="NE" id="Nebraska"/>
+            <xs:enumeration value="NL" id="Nuevo_Leon"/>
+            <xs:enumeration value="NV" id="Nevada"/>
+            <xs:enumeration value="NB" id="New_Brunswick"/>
+            <xs:enumeration value="NH" id="New_Hampshire"/>
+            <xs:enumeration value="NJ" id="New_Jersey"/>
+            <xs:enumeration value="NM" id="New_Mexico"/>
+            <xs:enumeration value="NY" id="New_York"/>
+            <xs:enumeration value="NF" id="Newfoundland"/>
+            <xs:enumeration value="NC" id="North_Carolina"/>
+            <xs:enumeration value="ND" id="North_Dakota"/>
+            <xs:enumeration value="NT" id="Northwest_Territories"/>
+            <xs:enumeration value="NS" id="Nova_Scotia"/>
+            <xs:enumeration value="NU" id="Nunavut"/>
+            <xs:enumeration value="OA" id="Oaxaca"/>
+            <xs:enumeration value="OH" id="Ohio"/>
+            <xs:enumeration value="OK" id="Oklahoma"/>
+            <xs:enumeration value="ON" id="Ontario"/>
+            <xs:enumeration value="OR" id="Oregon"/>
+            <xs:enumeration value="PA" id="Pennsylvania"/>
+            <xs:enumeration value="PE" id="Prince_Edward_Island"/>
+            <xs:enumeration value="PQ" id="Quebec"/>
+            <xs:enumeration value="PR" id="Puerto_Rico"/>
+            <xs:enumeration value="PU" id="Puebla"/>
+            <xs:enumeration value="QA" id="Queretaro"/>
+            <xs:enumeration value="QR" id="Quintana_Roo"/>
+            <xs:enumeration value="RI" id="Rhode_Island"/>
+            <xs:enumeration value="SC" id="South_Carolina"/>
+            <xs:enumeration value="SD" id="South_Dakota"/>
+            <xs:enumeration value="SI" id="Sinaloa"/>
+            <xs:enumeration value="SK" id="Saskatchewan"/>
+            <xs:enumeration value="SL" id="San_Luis_Potos"/>
+            <xs:enumeration value="SO" id="Sonora"/>
+            <xs:enumeration value="TA" id="Tabasco"/>
+            <xs:enumeration value="TL" id="Tlaxcala"/>
+            <xs:enumeration value="TM" id="Tamaulipas"/>
+            <xs:enumeration value="TN" id="Tennessee"/>
+            <xs:enumeration value="TX" id="Texas"/>
+            <xs:enumeration value="UT" id="Utah"/>
+            <xs:enumeration value="VA" id="Virginia"/>
+            <xs:enumeration value="VI" id="Virgin_Islands"/>
+            <xs:enumeration value="VL" id="Veracruz-Llave"/>
+            <xs:enumeration value="VT" id="Vermont"/>
+            <xs:enumeration value="WA" id="Washington"/>
+            <xs:enumeration value="WV" id="West_Virginia"/>
+            <xs:enumeration value="WI" id="Wisconsin"/>
+            <xs:enumeration value="WY" id="Wyoming"/>
+            <xs:enumeration value="YC" id="Yucatan"/>
+            <xs:enumeration value="YT" id="Yukon_Territory"/>
+            <xs:enumeration value="ZT" id="Zacatecas"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="StateProvinceInfo">
+        <xs:sequence>
+            <xs:element name="id" type="types:StateProvince"/>
+            <xs:element name="abbreviation" type="types:String2"/>
+            <xs:element name="name" type="types:LocalizedString"/>
+            <xs:element name="country" type="types:CountryCode"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="Zone">
+        <xs:annotation>
+            <xs:documentation>
+                <em>Zones</em> are geographic areas represented as a collection of states or provinces. <br/>
+                The following zones are currently defined:
+                <ul>
+                    <li>"New England" [Legacy code "Z0"] = CT,ME,MA,NH,NJ,RI,VT</li>
+                    <li>"NorthEast" [Legacy code "Z1"] = DE,NY,PA</li>
+                    <li>"Mid-Atlantic" [Legacy code "Z2"] = DC,MD,NC,SC,VA,WV</li>
+                    <li>"SouthEast" [Legacy code "Z3"] = AL,FL,GA,MS,TN </li>
+                    <li>"Mid-West" [Legacy code "Z4"] = IN,KY,MI,OH </li>
+                    <li>"North Central" [Legacy code "Z5"] = IA,MN,MT,ND,SD,WI </li>
+                    <li>"Central" [Legacy code "Z6"] = IL,KS,MO,NE </li>
+                    <li>"South" [Legacy code "Z7"] = AR,LA,OK,TX </li>
+                    <li>"Mountain" [Legacy code "Z8"] = AZ,CO,ID,NV,NM,UT,WY </li>
+                    <li>"West" [Legacy code "Z9"] = AK,CA,HI,OR,WA </li>
+                    <li>"Canada" [No Legacy code] = All of Canada / ON,PQ,NB,NF,NS,PE,AB,BC,MB,SK,NT,YT </li>
+                    <li>"Central Canada" [Legacy code "ZC"] = ON,PQ </li>
+                    <li>"Eastern Canada" [Legacy code "ZE"] = NB,NF,NS,PE </li>
+                    <li>"Western Canada" [Legacy code "ZW"] = AB,BC,MB,SK,NT,YT </li>
+                    <li>"Mexico" [Legacy code "ZM"] = All of Mexico / AG,BJ,BS,CH,CI,CL,CP,CU,DF,DG,EM,GJ,GR,HG,JA,MH,
+                        MR,NA,NL,OA,PU,QA,QR,SI,SL,SO,TA,TL,TM,VL,YC,ZT</li>
+                    <li>"Northern Mexico" [Legacy code "ZB"] = Mexican US Border States / BJ,BS,CL,CU,NL,SO,TM</li>
+                    <li>"Contiguous USA" [No Legacy code] = Lower 48 + DC</li>
+                </ul>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String20">
+            <xs:enumeration value="New England" id="Z0"/>
+            <xs:enumeration value="North East" id="Z1"/>
+            <xs:enumeration value="Mid-Atlantic" id="Z2"/>
+            <xs:enumeration value="South East" id="Z3"/>
+            <xs:enumeration value="Mid-West" id="Z4"/>
+            <xs:enumeration value="North Central" id="Z5"/>
+            <xs:enumeration value="Central" id="Z6"/>
+            <xs:enumeration value="South" id="Z7"/>
+            <xs:enumeration value="Mountain" id="Z8"/>
+            <xs:enumeration value="West" id="Z9"/>
+            <xs:enumeration value="Canada" id="ZD"/>
+            <xs:enumeration value="Western Canada" id="ZW"/>
+            <xs:enumeration value="Eastern Canada" id="ZE"/>
+            <xs:enumeration value="Central Canada" id="ZC"/>
+            <xs:enumeration value="Mexico" id="ZM"/>
+            <xs:enumeration value="Northern Mexico" id="ZB"/>
+            <xs:enumeration value="Contiguous USA" id="ZU"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="ZoneInfo">
+        <xs:sequence>
+            <xs:element name="id" type="types:Zone"/>
+            <xs:element name="legacyCode" type="types:String2"/>
+            <xs:element name="description" type="types:LocalizedString"/>
+            <xs:element name="states" type="types:StateProvince" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="ZipcodeStatus">
+        <xs:annotation>
+            <xs:documentation>
+                Indicates if a city name is recognized by the United States Postal Service for a
+                particular postal code.  In the case where more than one city name is associated
+                with a particular postal code, the primary city name (<em>Point</em>) will have a
+                status of <em>Primary</em> and alternate city names will have a status of
+                <em>Acceptable</em>.  If a city name is known to TransCore but is not recognized
+                by the USPS, then it will have a status of <em>Unacceptable</em>, and the postal
+                code assigned to it is TransCore's best guess (usually based on proximity to the
+                nearest place with a valid postal code).<br/>
+                <br/>
+                <b>NOTE:</b>ZipcodeStatus is only applicable to US cities.  All Canadian postal
+                codes are considered Primary and currently TransCore does not store Mexican
+                postal codes.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Primary"/>
+            <xs:enumeration value="Acceptable"/>
+            <xs:enumeration value="Unacceptable"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="GeographicLocation">
+        <xs:annotation>
+            <xs:documentation>
+                Abstract base class defined to support substitution groups.                
+                In some instances .NET tools generate better code if they have a common base type.  
+                This provides a common base type for all the geographic location types.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="GeographicLocation" type="types:GeographicLocation"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="MinimalPoint">
+        <xs:annotation>
+            <xs:documentation>
+                 A <em>MinimalPoint</em> is a named place that is located in a state/province and has latitude and longitude coordinates.<br/>
+                <em>MinimalPoints</em> encompass the notion of a city, a USGS placename, or a waypoint.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="types:GeographicLocation">
+                <xs:sequence>
+                    <xs:element name="city" type="types:CityName"/>
+                    <xs:element name="stateProvince" type="types:StateProvince"/>
+                    <xs:element name="latitude" type="types:Latitude"/>
+                    <xs:element name="longitude" type="types:Longitude"/>
+                    <xs:element name="county" type="types:String30" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                <em>County</em> represents the county, parrish, department, district, or borough in which this 
+                                place is located.  This can be particularly important when a state or province has multiple points 
+                                with the same name.  Although the latitude and longitude values will be unique, people generally need a more 
+                                useful hint, such as a county name.<br/>
+                                <br/>
+                                If the point does not have an applicable notion of county, or it is not known, then this item is omitted.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="minimalPoint" type="types:MinimalPoint" substitutionGroup="types:GeographicLocation"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Point">
+        <xs:annotation>
+            <xs:documentation>
+                A <em>Point</em> is a <em>KnownMinimalPoint</em> with additional information.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="types:MinimalPoint">
+                <xs:sequence>
+                    <xs:element name="shortCityName" type="types:String7" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The shortened version of <em>cityName</em>. This is commonly used in situations where space is at a 
+                                premium, such as Truck Stop Monitors and faxback search results.<br/>
+                                <br/>
+                                If the point does not have a short name, then this item is omitted.                                
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="pointId" type="types:PointId">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The internal TransCore unique ID for this place.  This is used as a key to uniquely identify 
+                                a specific point within the standard TransCore set of points.<br/>
+                                <br/>
+                                If this point is not known to TransCore, this element will be set to zero (0).
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="metroCode" type="types:NonNegativeInt">
+                        <xs:annotation>
+                            <xs:documentation>
+                                These are the Primary Metropolitan Statistical Area (MSA) codes as defined, and assigned, by the US Office of 
+                                Management and Budget.<br/>
+                                <br/>
+                                The definitions are often obscure, but an MSA usually includes one city with 50,000 or more inhabitants and the 
+                                county that the city falls within.  It can also include nearby counties if they are within commuting distance.<br/>
+                                <br/>
+                                <b>NOTE:</b>Not all ZIP codes have an MSA code because many ZIPs are in rural areas.<br/>
+                                TransCore assigns <em>9999</em> to all Canadian locations.<br/>
+                                <br/>
+                                TransCore assigns <em>0</em> to all Mexican locations.<br/>
+                                <br/>
+                                If a Point does not have an MSA, it is asigned <em>0</em>.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="postalCode" type="types:PostalCode" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The primary postal code for this <em>Point</em>. It is possible for a large city to have more than
+                                a single postal code. If so, alternate postal codes will be listed in <em>alternatePostalCode</em>.
+                                If TransCore does not have a postal code for this <em>Point</em>, this item is omitted.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="alternatePostalCodes" type="types:PostalCode" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>
+                                These are the postal codes assigned to this point in which the government (e.g., USPS
+                                or Canada Post) has classifed the assignment as "Acceptable".  That means
+                                that another point is the "Primary" for the postal code, but if associated with a 
+                                this point, the postal service will respect it as valid.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="status" type="types:ZipcodeStatus"/>
+                    <xs:element name="preferred" type="xs:boolean" minOccurs="0">                    
+                        <xs:annotation>
+                            <xs:documentation>
+                                In the case of multiple points having the same city name in the same state, this field is 
+                                set true if this point is one that is preferred for freight matching.  Typically,
+                                this is the point with the largest population.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="primaryPostalCodes" type="types:PostalCode" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>
+                                These are the postal codes assigned to this point in which the government (e.g., USPS
+                                or Canada Post) has classifed the assignment as "Primary".
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="kmaId" type="types:String16" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                ID of the KMA (Key Market Area) in which this point resides.  
+                                Not all points reside in a KMA.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="point" type="types:Point" substitutionGroup="types:GeographicLocation"/>
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<!-- -->
+	<xs:complexType name="Kma">
+		<xs:annotation>
+			<xs:documentation>
+				Key Market Area
+            </xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="types:GeographicLocation">
+				<xs:sequence>
+					<xs:element name="id" type="types:String100"/>
+					<xs:element name="index" type="types:NonNegativeInt"/>
+					<xs:element name="description" type="types:String30"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- -->
+	<xs:element name="kma" type="types:Kma"/>
+	
+    <xs:complexType name="PostalCodePoints">
+        <xs:annotation>
+            <xs:documentation>
+                The geographic points which reference a particular postal code.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="postalCode" type="types:PostalCode">   
+                <xs:annotation>         
+                    <xs:documentation>
+                        The postal code being referenced.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element> 
+            <xs:element name="primaryPoint" type="types:Point" minOccurs="0">                    
+                <xs:annotation>
+                    <xs:documentation>
+                        The point that is the "primary" location of the postal code 
+                        (as assigned by the US Postal Service or Canada Post).
+                        Only one point will be the primary for any given postal code.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="alternatePoints" type="types:Point" minOccurs="0" maxOccurs="unbounded">                 
+                <xs:annotation>
+                    <xs:documentation>
+                        The points that are alternate locations for the postal code 
+                        (as assigned by the US Postal Service or Canada Post).
+                        In general, this means that postal addresses to this point's city, state,
+                        and this alternate postal code will be considered deliverable by USPS/CP.<br/>
+                        <br/>
+                        Large cities may have many alternate points.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="postalCodePoints" type="types:PostalCodePoints"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="RangeCircle">
+        <xs:annotation>
+            <xs:documentation>
+                A <em>RangeCircle</em> defines a circular area around a <em>Point</em>.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="point" type="types:MinimalPoint"/>
+            <xs:element name="radius" type="types:Mileage"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Area">
+        <xs:annotation>
+            <xs:documentation>
+                An <em>Area</em> is a collection of states, provinces and/or zones.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="types:GeographicLocation">
+                <xs:sequence>
+                    <xs:element name="stateProvinces" type="types:StateProvince" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>
+                                A list of states and/or provinces in the desired region.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="zones" type="types:Zone" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>
+                                A list of one or more zones in the desired region.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="area" type="types:Area" substitutionGroup="types:GeographicLocation"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Open">
+        <xs:annotation>
+            <xs:documentation>
+                The <em>Open</em> type designates an empty geographic specification.  Depending on context, this can represent 
+                either "nowhere" or "anywhere".
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="types:GeographicLocation"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="open" type="types:Open" substitutionGroup="types:GeographicLocation"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="CityName">
+        <xs:annotation>
+            <xs:documentation>
+                The common name of a city, USGS place, or waypoint.<br/>
+                <br/>
+                <b>NOTE:</b> most current TransCore applications support just 14 character city names.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String30"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="CountyName">
+        <xs:annotation>
+            <xs:documentation>
+                The common name of a county, bourough, parrish<br/>
+                <br/>
+                <b>NOTE:</b> most current TransCore applications support just 14 character county names.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String30"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="PointId">
+        <xs:annotation>
+            <xs:documentation>
+                A unique TransCore ID is assigned to all <em>Point</em>s.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:NonNegativeInt"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="CountryCode">
+        <xs:annotation>
+            <xs:documentation>
+                Based on two-letter ISO 3166 country codes for countries supported by TransCore.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String2">
+            <xs:enumeration value="US"/>
+            <xs:enumeration value="CA"/>
+            <xs:enumeration value="MX"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="CountryInfo">
+        <xs:sequence>
+            <xs:element name="id" type="types:CountryCode"/>
+            <xs:element name="abbreviation" type="types:String2">
+                <xs:annotation>
+                    <xs:documentation>
+                        The two-letter ISO 3166 country code.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="name" type="types:LocalizedString"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="CurrencyCode">
+        <xs:annotation>
+            <xs:documentation>
+                The ISO 4217 three-letter IDs for the representation of international currencies.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String3">
+            <xs:minLength value="3"/>
+            <xs:enumeration value="USD"/>
+            <xs:enumeration value="CAD"/>
+            <xs:enumeration value="MXN"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="UtcOffset">
+        <xs:annotation>
+            <xs:documentation>
+                The number of milliseconds to add to UTC to get local time.
+                Negative values are for locations west of the Greenwich Meridian,
+                e.g., Pacific Standard Time is -28800000.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:int">
+            <xs:minInclusive value="-43200000">
+                <xs:annotation>
+                    <xs:documentation>
+                        12 hours west of Greenwich, in milliseconds.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:minInclusive>
+            <xs:maxInclusive value="50400000">
+                <xs:annotation>
+                    <xs:documentation>
+                        14 hours east of Greenwich, in milliseconds.<b/>
+                        <b/>
+                        This is effectively the same time zone as Hawaii, except "tomorrow", 
+                        and is used by the Kiribati Islands, which span
+                        the international date line.  This allows the entire nation to operate in
+                        the same date (except for the three hours as they cross midnight).<b/>
+                        <b/>
+                        13 hours east of Greenwich is also used by New Zealand for Summer Time
+                        This allows them to have the US equivalent of Daylight Savings, but not deal 
+                        with suddenly leaping into "tomorrow" when they go on DST.
+                     </xs:documentation>
+                </xs:annotation>
+            </xs:maxInclusive>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Locale">
+        <xs:annotation>
+            <xs:documentation>
+                A <em>Locale</em> represents a specific geographical, political, or cultural region.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="language" type="xs:language" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Currently only "en" (English) is supported, with no specific support for 
+                        variants (e.g., "en_US", "en_CA", "en_UK".<b/>
+                        <b/>
+                        If omitted, will default to "en" (English).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="country" type="types:CountryCode" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        If omitted, will default to "CountryCode.US".
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="utcOffset" type="types:UtcOffset" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        If omitted, will default to 0 (zero), which is equivalent to UTC/GMT/ZT
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="preferences" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="currency" type="types:CurrencyCode" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    If omitted, will default to "CurrentCode.USD".
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="measurements" type="types:MeasurementSystem" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    If omitted, will default to "MeasurementSystem.Standard".
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="currencySymbol" type="types:String1" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    If omitted, will default to "$" (which covers USD, CAD, and MXN).
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="thousandsFormat" type="types:String1" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    If omitted, will default to ",".
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LocalizedString">
+        <xs:annotation>
+            <xs:documentation>
+                A language-localized string.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="locString" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        The localized string value.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="language" type="xs:language">
+                <xs:annotation>
+                    <xs:documentation>
+                        The language for which the string is localized.  Most commonly will be "en" or "en-US".
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <!--                                 Measurement Definitions                                      -->
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="MeasurementSystem">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Metric"/>
+            <xs:enumeration value="Standard"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="DistanceUnit">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="km"/>
+            <xs:enumeration value="mi"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="LengthUnit">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ft"/>
+            <xs:enumeration value="yd"/>
+            <xs:enumeration value="m"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="VolumeUnit">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="yd3"/>
+            <xs:enumeration value="ft3"/>
+            <xs:enumeration value="m3"/>
+            <xs:enumeration value="gal"/>
+            <xs:enumeration value="l"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="WeightUnit">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="kg"/>
+            <xs:enumeration value="lb"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="HeightUnit">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ft"/>
+            <xs:enumeration value="yd"/>
+            <xs:enumeration value="m"/>
+            <xs:enumeration value="in"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="WidthUnit">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="m"/>
+            <xs:enumeration value="in"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="MileageType">
+        <xs:annotation>
+            <xs:documentation>
+                The type requested and/or method used to compute a road mileage distance. 
+                TransCore currently only supports a single road mileage provider (ALK PC*Miler). 
+                The 'RoadProMiles' and 'RoadAlk' options remain in place for backward 
+                compatibility, but we have no short-term plans to support other providers. We 
+                recommend using the 'Road' option, which will return mileages from the current 
+                mileage provider.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Air"/>
+            <xs:enumeration value="Road"/>
+            <xs:enumeration value="RoadProMiles"/>
+            <xs:enumeration value="RoadAlk"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Currency">
+        <xs:sequence>
+            <xs:element name="amount" type="xs:double"/>
+            <xs:element name="currency" type="types:CurrencyCode"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Distance">
+        <xs:sequence>
+            <xs:element name="amount">
+                <xs:simpleType>
+                    <xs:restriction base="xs:double">
+                        <xs:minInclusive value="0.0"/>
+                        <xs:maxInclusive value="40076.0">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    Equatorial circumference of the Earth (kilometers).  Since air miles really only
+                                    needs half this distance as its maximum, hopefully this will be a large 
+                                    enough limit for anyone trying to travel by road and water half-way 
+                                    around the globe.
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:maxInclusive>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="unit" type="types:DistanceUnit"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Mileage">
+        <xs:annotation>
+            <xs:documentation>
+                A Distance value, and a description of how the distance was derived.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="distance" type="types:Distance"/>
+            <xs:element name="method" type="types:MileageType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Length">
+        <xs:sequence>
+            <xs:element name="amount">
+                <xs:simpleType>
+                    <xs:restriction base="xs:double">
+                        <xs:minInclusive value="0.0"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="unit" type="types:LengthUnit"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Volume">
+        <xs:sequence>
+            <xs:element name="amount">
+                <xs:simpleType>
+                    <xs:restriction base="xs:double">
+                        <xs:minInclusive value="0.0"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="unit" type="types:VolumeUnit"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Weight">
+        <xs:sequence>
+            <xs:element name="amount">
+                <xs:simpleType>
+                    <xs:restriction base="xs:double">
+                        <xs:minInclusive value="0.0"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="unit" type="types:WeightUnit"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Height">
+        <xs:sequence>
+            <xs:element name="amount">
+                <xs:simpleType>
+                    <xs:restriction base="xs:double">
+                        <xs:minInclusive value="0.0"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="unit" type="types:HeightUnit"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Width">
+        <xs:sequence>
+            <xs:element name="amount">
+                <xs:simpleType>
+                    <xs:restriction base="xs:double">
+                        <xs:minInclusive value="0.0"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="unit" type="types:WidthUnit"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="UTC">
+        <xs:annotation>
+            <xs:documentation>
+                Universal Coordinated Time representation.<br/>
+                TransCore uses UTC exclusively, therefore <b>ALL</b> dateTime values must be in UTC format.  Type <em>UTC</em> 
+                helps enforce this requirement with the legal dateTime pattern: "YYYY-MM-DDTHH:mm:ssZ".
+                <b>NOTE:</b>
+                <ul>
+                    <li>The seconds portion may optionally contain a decimal fraction</li>
+                    <li>Timestamps in particular will make use of millisecond precision.</li>
+                </ul>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:dateTime">
+            <xs:minInclusive value="2003-01-01T00:00:00.000Z"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LocalDateTime">
+        <xs:annotation>
+            <xs:documentation>
+                Container for date/time and a time zone is which it is to be rendered.
+                CSB does not support conversions to/from/between localized date/times!
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="when" type="types:UTC"/>
+            <xs:element name="timeZoneId" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        The ID of the time zone in which "when" is to be rendered.
+                        
+                        It is highly recommended that a recognized standard ID be used 
+                        (e.g., IANA: http://en.wikipedia.org/wiki/IANA_time_zone_database for which the Beaverton
+                        installation of CSB operates in the "America/Los_Angeles" time zone).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LocalDateTimeRange">
+        <xs:sequence>
+            <xs:element name="from" type="types:UTC"/>
+            <xs:element name="to" type="types:UTC"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+	<xs:simpleType name="Month">
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="1"/>
+			<xs:maxInclusive value="12"/>
+		</xs:restriction>
+	</xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+	<xs:simpleType name="Year">
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="1900"/>
+			<xs:maxInclusive value="2200"/>
+		</xs:restriction>
+	</xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="YearMonth">
+        <xs:sequence>
+            <xs:element name="year" type="types:Year">
+                <xs:annotation>
+                    <xs:documentation>
+                        4-digit year
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="month" type="types:Month">
+                <xs:annotation>
+                    <xs:documentation>
+                        2-digit month
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="YearMonthRange">
+        <xs:sequence minOccurs="1">
+            <xs:element name="fromYearMonth" type="types:YearMonth" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="toYearMonth" type="types:YearMonth" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="DateRange">
+        <xs:sequence minOccurs="1">
+            <xs:element name="fromDate" type="types:UTC" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="toDate" type="types:UTC" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <!--                                        Credit Card Definitions                               -->
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="CreditCardType">
+        <xs:annotation>
+            <xs:documentation>
+                Credit card types recognized by TransCore.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Visa"/>
+            <xs:enumeration value="MasterCard"/>
+            <xs:enumeration value="American Express"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="CreditCardNumber">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="13"/>
+            <xs:maxLength value="16"/>
+            <xs:pattern value="3[47][0-9]{13}"/>
+            <xs:pattern value="5[1-5][0-9]{14}"/>
+            <xs:pattern value="4([0-9]{12}|[0-9]{15})"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="CreditCardVerificationCode">
+        <xs:restriction base="xs:int">
+            <xs:minInclusive value="0"/>
+            <xs:maxInclusive value="9999"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="CreditCardExpiration">
+        <xs:annotation>
+            <xs:documentation>
+                The month and year in which a credit card expires.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="month" type="types:Month"/>
+            <xs:element name="year">
+                <xs:simpleType>
+                    <xs:restriction base="types:Year">
+                        <xs:minInclusive value="2007"/>
+                        <xs:maxInclusive value="2100"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <!--                                    Contact Information Definitions                           -->
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="PostalCode">
+        <xs:annotation>
+            <xs:documentation>
+                North American Postal Codes
+                <ul>
+                    <li>Canada: LNL NLN</li>
+                    <li>Mexico: NNNNN</li>
+                    <li>US ZIP: NNNNN(-NNNN)</li>
+                </ul>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="country" type="types:CountryCode">
+                <xs:annotation>
+                    <xs:documentation>
+                        Country code.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="code">
+                <xs:annotation>
+                    <xs:documentation>
+                        ZIP or postal code. The hyphen in 9-digit US ZIP codes and the 
+                        space in Canadian postal codes are optional.  
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="5"/>
+                        <xs:maxLength value="10"/>
+                        <xs:pattern value="[A-Z][0-9][A-Z] [0-9][A-Z][0-9]"/>
+                        <xs:pattern value="[A-Z][0-9][A-Z][0-9][A-Z][0-9]"/>
+                        <xs:pattern value="[0-9]{5}"/>
+                        <xs:pattern value="[0-9]{5}(-[0-9]{4})"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="PostalCodePattern">
+        <xs:annotation>
+            <xs:documentation>
+                The postal code patterns
+                <ul>
+                    <li>Canada: LNL NLN</li>
+                    <li>Mexico: NNNNN</li>
+                    <li>US ZIP: NNNNN(-NNNN)</li>
+                </ul>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="5"/>
+            <xs:maxLength value="10"/>
+            <xs:pattern value="[A-Z][0-9][A-Z] [0-9][A-Z][0-9]"/>
+            <xs:pattern value="[A-Z][0-9][A-Z][0-9][A-Z][0-9]"/>
+            <xs:pattern value="[0-9]{5}"/>
+            <xs:pattern value="[0-9]{5}(-[0-9]{4})"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="PartialPostalCode">
+        <xs:annotation>
+            <xs:documentation>
+                Partial North American Postal Codes.<br/>
+                <br/>
+                These are typically only of use when looking up postal codes for a
+                metropolitan area.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="country" type="types:CountryCode"/>
+            <xs:element name="code">
+                <xs:annotation>
+                    <xs:documentation>
+                        A minimum of three leading characters of a postal code must be specified.
+                        It makes little sense to specify fewer (too broad a geographical
+                        area, and certainly larger than a metropolitan area).<br/>
+                        <br/>
+                        Likewise, there is often little value to specifying more than three characters:
+                        <ul>
+                            <li>US: Digits 4 and 5 do not necessarily resolve to an area 
+                            finer than a city (although large cities may have many postal
+                            codes), and in fact, there's no guarantee that all ZIPs with the same 
+                            leading three digits are in the same metro area (and often are not).</li>
+                            <li>Canada: While all <b>urban</b> postal codes with the same first triplet 
+                            always resolve to the same city, the second triplet resolves to 
+                            arbitrarily-sized small areas, typically neighborhoods, large
+                            buildings/campuses, etc.  In <b>rural</b> areas, many small towns and
+                            villages can share the first triplet, and the second triplet 
+                            may specify a very large area.</li>
+                            <li>Mexico: Postal Codes obstensibly follow a pattern in which
+                            successive digits resolve to finer geographical areas, but there
+                            is no guarantee.  Large cities often have postal codes within them
+                            that have differing third digits.</li>
+                        </ul>
+                    </xs:documentation>
+                </xs:annotation>                        
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+
+                        <!-- US and Mexico -->
+                        <xs:pattern value="[0-9][0-9][0-9]"/>
+                        <xs:pattern value="[0-9][0-9][0-9][0-9]"/>
+                        <xs:pattern value="[0-9][0-9][0-9][0-9][0-9]"/>
+                        
+                        <!-- Canada -->                        
+                        <xs:pattern value="[A-Z][0-9][A-Z]"/>
+                        <xs:pattern value="[A-Z][0-9][A-Z][0-9]"/>
+                        <xs:pattern value="[A-Z][0-9][A-Z][0-9][A-Z]"/>
+                        <xs:pattern value="[A-Z][0-9][A-Z][0-9][A-Z][0-9]"/>                        
+                        <xs:pattern value="[A-Z][0-9][A-Z] [0-9]"/>
+                        <xs:pattern value="[A-Z][0-9][A-Z] [0-9][A-Z]"/>
+                        <xs:pattern value="[A-Z][0-9][A-Z] [0-9][A-Z][0-9]"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="PostalPrefix">
+        <xs:annotation>
+            <xs:documentation>
+                Three-character partial postal codes.  For US, aka "three digit ZIP",
+                for Canada, aka "FSA" (Forward Sortation Area).<br/>
+                <br/>
+                These are typically only of use when looking up postal codes for a
+                metropolitan area.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="country" type="types:CountryCode"/>
+            <xs:element name="code">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+
+                        <!-- US and Mexico -->
+                        <xs:pattern value="[0-9][0-9][0-9]"/>
+                        
+                        <!-- Canada -->                        
+                        <xs:pattern value="[A-Z][0-9][A-Z]"/>
+                        <xs:pattern value="[A-Z][0-9]\*"/>
+                        <xs:pattern value="[A-Z]\*\*"/>
+                        
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="MinimalPersonName">
+        <xs:annotation>
+            <xs:documentation>
+                First, middle and last name of a person.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="firstName" type="types:String30"/>
+            <xs:element name="middleName" type="types:String30" minOccurs="0"/>
+            <xs:element name="lastName" type="types:String30"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="PersonName">
+        <xs:annotation>
+            <xs:documentation>
+                First and last name of a person.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="types:MinimalPersonName">
+                <xs:sequence>
+                    <xs:element name="title" type="types:String70" minOccurs="0"/>
+                    <xs:element name="prefix" type="types:String8" minOccurs="0"/>
+                    <xs:element name="suffix" type="types:String8" minOccurs="0"/>
+                    <xs:element name="initials" type="types:String3"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="TelephonyDeviceType">
+        <xs:annotation>
+            <xs:documentation>
+                The recognized types of telephony devices.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Voice"/>
+            <xs:enumeration value="Text"/>
+            <xs:enumeration value="Numeric Pager"/>
+            <xs:enumeration value="Fax"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="PhoneNumberType">
+        <xs:annotation>
+            <xs:documentation>
+                The different classifications of phone numbers.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Local"/>
+            <xs:enumeration value="TollFree"/>
+            <xs:enumeration value="InternationalTollFree"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="PhoneNumberCountryCode">
+        <xs:annotation>
+            <xs:documentation>
+				Country codes are short alphabetic or numeric geographical codes (geocodes) developed 
+				to represent countries and dependent areas, for use in data processing and communications.                
+				<br/>
+                This field is a String that contains a numbers that's 1-3 digits long.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[0-9]{1,3}"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="PhoneNumberNumber">
+        <xs:annotation>
+            <xs:documentation>
+                A telephone number or phone number is a sequence of digits used to call from 
+                one telephone line to another in a public switched telephone network. 
+                <br/>
+                This field is a String that contains a numbers that's 8-10 digits long.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[0-9]{8,10}"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="PhoneNumberExtension">
+        <xs:annotation>
+            <xs:documentation>
+                An extension telephone is an additional telephone wired to the same telephone 
+                line as another. In middle 20th century telephone jargon, the first telephone on a 
+                line was a "Main Station" and subsequent ones "Extensions". Such extension phones 
+                allow making or receiving calls in different rooms, for example in a home. 
+                Some telephones intended for use as extensions have built in intercom features.
+                <br/>
+                This field is a String that contains a numbers that's 1-5 digits long.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[0-9]{1,5}"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="OptionalPhoneNumber">
+        <xs:annotation>
+            <xs:documentation>
+                Describes TransCore's interpretation of phone numbers.<br/>
+                <br/>
+                <b>NOTE:</b>
+                <ul>
+                    <li>US and Canada are always 3-digit area code + 7-digit local code</li>
+                    <li>Area codes should not begin with a zero or one, but there exists some legacy data containing such area codes. For
+                        the time being such numbers will continue to be accepted. Please note that this could change in the future and
+                        area codes beginning with a zero or one would then be rejected as invalid!</li>
+                    <li>Mexico has 1-3 digit area code + 7-digit local code, except in Mexico City the local code is always 8 digits, where 
+                        the first digit is always '5': 5nnnnnnn</li>
+                    <li>International access from the United States and Canada is always "011", and the country code for Mexico from 
+                        United States and Canada is always "52"</li>
+                    <li>A country code is always a 3 digit code with leading zeros where needed</li>
+                    <li>An extension consists of 1 to 5 numeric digits</li>
+                </ul>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence minOccurs="0">
+            <xs:element name="countryCode" type="types:PhoneNumberCountryCode" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Country code. 1-3 digits.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="number" type="types:PhoneNumberNumber">
+                <xs:annotation>
+                    <xs:documentation>
+                        The primary number. 8-10 digits.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="extension" type="types:PhoneNumberExtension" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Extension. 1-5 digits.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="PhoneNumber">
+        <xs:annotation>
+            <xs:documentation>
+                Describes TransCore's interpretation of phone numbers.<br/>
+                <br/>
+                <b>NOTE:</b>
+                <ul>
+                    <li>US and Canada are always 3-digit area code + 7-digit local code</li>
+                    <li>Area codes should not begin with a zero or one, but there exists some legacy data containing such area codes. For
+                        the time being such numbers will continue to be accepted. Please note that this could change in the future and
+                        area codes beginning with a zero or one would then be rejected as invalid!</li>
+                    <li>Mexico has 1-3 digit area code + 7-digit local code, except in Mexico City the local code is always 8 digits, where 
+                        the first digit is always '5': 5nnnnnnn</li>
+                    <li>International access from the United States and Canada is always "011", and the country code for Mexico from 
+                        United States and Canada is always "52"</li>
+                    <li>A country code is always a 3 digit code with leading zeros where needed</li>
+                    <li>An extension consists of 1 to 5 numeric digits</li>
+                </ul>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:restriction base="types:OptionalPhoneNumber">
+                <xs:sequence>
+                    <xs:element name="countryCode" type="types:PhoneNumberCountryCode" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Country code
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="number" type="types:PhoneNumberNumber">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The primary number
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="extension" type="types:PhoneNumberExtension" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Extension
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Contact">
+        <xs:annotation>
+            <xs:documentation>
+                The information needed to contact a freight matching User. Requires that the
+                person's initials be provided, as well as their poster state/province.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="name" type="types:PersonName"/>
+            <xs:element name="primaryPhoneNumber" type="types:PhoneNumber"/>
+            <xs:element name="alternatePhoneNumber" type="types:PhoneNumber" minOccurs="0"/>
+            <xs:element name="faxPhoneNumber" type="types:PhoneNumber" minOccurs="0"/>
+            <xs:element name="email" type="types:EmailAddress" minOccurs="0"/>
+            <xs:element name="address" type="types:Address" minOccurs="0"/>
+            <xs:element name="notes" type="types:String256" minOccurs="0"/>
+            <xs:element name="postersStateProvince" type="types:StateProvince"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="OptionalAddress">
+        <xs:sequence minOccurs="0">
+            <xs:element name="street" type="types:String200"/>
+            <xs:element name="city" type="types:CityName"/>
+            <xs:element name="stateProvince" type="types:StateProvince"/>
+            <xs:element name="postalCode" type="types:PostalCode"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Address">
+        <xs:complexContent>
+            <xs:restriction base="types:OptionalAddress">
+                <xs:sequence>
+                    <xs:element name="street" type="types:String200"/>
+                    <xs:element name="city" type="types:CityName"/>
+                    <xs:element name="stateProvince" type="types:StateProvince"/>
+                    <xs:element name="postalCode" type="types:PostalCode"/>
+                </xs:sequence>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="OptionalEmailAddress">
+        <xs:restriction base="types:String256">
+            <xs:pattern value="([\?\*\+!-&amp;=a-zA-Z0-9_\-])([\?\*\+!-&amp;=a-zA-Z0-9_\-\.]*)@(\[((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}|((([a-zA-Z0-9\-]+)\.)+))([a-zA-Z]{2,}|(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\])"/>
+            <!-- 
+                        This pattern allows an empty string. The simple way of 
+                        specifying the empty string ("") doesn't validate 
+                        in XMLSpy. So we're going with this instead.
+                        This allows this type to be used in the case where the 
+                        optional e-mail address it not really optional: it must 
+                        be present, but it can be empty.
+             -->
+            <xs:pattern value="[*]{0}"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="EmailAddress">
+        <xs:restriction base="types:OptionalEmailAddress">
+            <xs:pattern value="([\?\*\+!-&amp;=a-zA-Z0-9_\-])([\?\*\+!-&amp;=a-zA-Z0-9_\-\.]*)@(\[((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}|((([a-zA-Z0-9\-]+)\.)+))([a-zA-Z]{2,}|(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\])"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="FourPartVersionNumber">
+        <xs:annotation>
+            <xs:documentation>
+                n.n.n.n
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:pattern value="([0-9]([0-9])?.){3}([0-9]([0-9])?)"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="PreferredContactMethod">
+        <xs:annotation>
+            <xs:documentation>
+                How the customer prefers to be contacted.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Primary phone"/>
+            <xs:enumeration value="Alternate phone"/>
+            <xs:enumeration value="E-mail"/>
+            <xs:enumeration value="Mail"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="HowHeardOf">
+        <xs:annotation>
+            <xs:documentation>
+                How the customer heard of TransCore.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Another trucker"/>
+            <xs:enumeration value="Internet search"/>
+            <xs:enumeration value="Magazine ad"/>
+            <xs:enumeration value="Radio ad"/>
+            <xs:enumeration value="Sales person"/>
+            <xs:enumeration value="Truck stop ad"/>
+            <xs:enumeration value="Other"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="Weekday">
+        <xs:annotation>
+            <xs:documentation>
+                How the customer heard of TransCore.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Sunday"/>
+            <xs:enumeration value="Monday"/>
+            <xs:enumeration value="Tuesday"/>
+            <xs:enumeration value="Wednesday"/>
+            <xs:enumeration value="Thursday"/>
+            <xs:enumeration value="Friday"/>
+            <xs:enumeration value="Saturday"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="EmailMessage">
+        <xs:annotation>
+            <xs:documentation>
+                This type will be deprecated. Use Email type instead.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="subject" type="types:String100"/>
+            <xs:element name="from" type="types:EmailAddress"/>
+            <xs:element name="to" type="types:EmailAddress" minOccurs="1" maxOccurs="30"/>
+            <xs:element name="cc" type="types:EmailAddress" minOccurs="0" maxOccurs="30"/>
+            <xs:element name="bcc" type="types:EmailAddress" minOccurs="0" maxOccurs="30"/>
+            <xs:element name="replyTo" type="types:EmailAddress" minOccurs="0"/>
+            <xs:element name="contentType" type="types:String100" minOccurs="0"/>
+            <xs:element name="encoding" type="types:String100" minOccurs="0"/>
+            <xs:element name="content" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Email">
+        <xs:sequence>
+            <xs:element name="subject" type="types:String100"/>
+            <xs:element name="from" type="types:EmailAddress"/>
+            <xs:element name="to" type="types:EmailAddress" minOccurs="1" maxOccurs="30"/>
+            <xs:element name="cc" type="types:EmailAddress" minOccurs="0" maxOccurs="30"/>
+            <xs:element name="bcc" type="types:EmailAddress" minOccurs="0" maxOccurs="30"/>
+            <xs:element name="replyTo" type="types:EmailAddress" minOccurs="0"/>
+			<xs:choice>
+				<xs:element ref="types:bodyPart"/>
+				<xs:element ref="types:body"/>
+			</xs:choice>
+			</xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="BodyPart">
+        <xs:sequence>
+            <xs:element name="contentType" type="types:String100" minOccurs="0"/>
+            <xs:element name="contentTransferEncoding" type="types:String100" minOccurs="0"/>
+            <xs:element name="fileName" type="types:String100" minOccurs="0"/>
+            <xs:element name="content" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+	<xs:element name="bodyPart" type="types:BodyPart"/>
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="Body">
+        <xs:annotation>
+            <xs:documentation>
+                This is used for multi-part emails.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+			<xs:element name="contentType" type="types:String100" minOccurs="0"/>
+            <xs:element ref="types:bodyPart" minOccurs="2" maxOccurs="10"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+	<xs:element name="body" type="types:Body"/>
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <!--                          Standard Trucking Business Identifiers                              -->
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="DUNS">
+        <xs:annotation>
+            <xs:documentation>
+                Dun and Bradstreet Universal Numbering System number.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String16"/>
+        <!-- This should be a 9 digit code, however legacy systems have overloaded its use and we have to remain compatible -->
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="MCNumber">
+        <xs:annotation>
+            <xs:documentation>
+                Motor Carrier (MC) number.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:int">
+            <xs:minInclusive value="0"/>
+            <xs:maxInclusive value="9999999"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="DOTNumber">
+        <xs:annotation>
+            <xs:documentation>
+                Department Of Transportation (DOT) number.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:long">
+            <xs:minInclusive value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="FederalTaxIdentifier">
+        <xs:annotation>
+            <xs:documentation>
+                Federal tax identification number used by the IRS to identify an individual and/or business.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:int">
+            <xs:minInclusive value="10000000"/>
+            <xs:maxInclusive value="999999999"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="CarrierBusinessType">
+        <xs:annotation>
+            <xs:documentation>
+                TransCore recognized business types for carriers.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Agent - Carrier"/>
+            <xs:enumeration value="Carrier Exempt"/>
+            <xs:enumeration value="LTL - Local/Regional"/>
+            <xs:enumeration value="LTL - National"/>
+            <xs:enumeration value="Owner/Operator"/>
+            <xs:enumeration value="Owner/Operator - Leased Out"/>
+            <xs:enumeration value="Specialized - Local/Regional"/>
+            <xs:enumeration value="Specialized - Long Distance"/>
+            <xs:enumeration value="Truckload - Local/Regional"/>
+            <xs:enumeration value="Truckload - Long Distance"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="TSNDisplayName">
+        <xs:annotation>
+            <xs:documentation>
+                The <em>short</em> name of the user, primarily used for display on Truck Stop Network monitors.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String8"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="AssetType">
+        <xs:annotation>
+            <xs:documentation>
+                Types of freight matching assets.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Shipment"/>
+            <xs:enumeration value="Equipment"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- --> 
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="EquipmentCategory">
+        <xs:annotation>
+            <xs:documentation>
+                Broad classification of equipment.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Vans"/>
+            <xs:enumeration value="Flatbeds"/>
+            <xs:enumeration value="Reefers"/>
+            <xs:enumeration value="Other"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="EquipmentClass">
+        <xs:annotation>
+            <xs:documentation>
+                All equipment (trucks and their containers) belong to one or more of the following 
+                classes of equipment.
+                
+                DO NOT CHANGE THE ORDERING OF THESE VALUES!!!!!!!
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Dry Bulk" id="B_legacy_search_class"/>
+            <xs:enumeration value="Containers" id="C_legacy_search_class"/>
+            <xs:enumeration value="Decks, Standard" id="D_legacy_search_class"/>
+            <xs:enumeration value="Decks, Specialized" id="K_legacy_search_class"/>
+            <xs:enumeration value="Flatbeds" id="F_legacy_search_class"/>
+            <xs:enumeration value="Other Equipment" id="O_legacy_search_class"/>
+            <xs:enumeration value="Reefers" id="R_legacy_search_class"/>
+            <xs:enumeration value="Tankers" id="T_legacy_search_class"/>
+            <xs:enumeration value="Vans, Standard" id="V_legacy_search_class"/>
+            <xs:enumeration value="Vans, Specialized" id="S_legacy_search_class"/>
+            <xs:enumeration value="Hazardous Materials" id="Z_legacy_search_class"/>
+            <xs:enumeration value="Conestoga" id="N_legacy_search_class"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="EquipmentClassCode">
+        <xs:annotation>
+            <xs:documentation>
+                Legacy/shorthand code for equipment classes
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String1"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="EquipmentType">
+        <xs:annotation>
+            <xs:documentation>
+                The following specific types of equipment are supported.
+                
+                DO NOT CHANGE THE ORDERING OF THESE VALUES!!!!!!!
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Auto Carrier" id="AC_legacy_equipment_type_code"/>
+            <xs:enumeration value="Container" id="C_legacy_equipment_type_code"/>
+            <xs:enumeration value="Container, Insulated" id="CI_legacy_equipment_type_code"/>
+            <xs:enumeration value="Container, Refrigerated" id="CR_legacy_equipment_type_code"/>
+            <xs:enumeration value="Double Drop" id="DD_legacy_equipment_type_code"/>
+            <xs:enumeration value="Drop Deck, Landoll" id="LA_legacy_equipment_type_code"/>
+            <xs:enumeration value="Dump Trailer" id="DT_legacy_equipment_type_code"/>
+            <xs:enumeration value="Flatbed" id="F_legacy_equipment_type_code"/>
+            <xs:enumeration value="Flatbed, Air-Ride" id="FA_legacy_equipment_type_code"/>
+            <xs:enumeration value="Flatbed, B-Train" id="BT_legacy_equipment_type_code"/>
+            <xs:enumeration value="Flatbed, Double" id="F2_legacy_equipment_type_code"/>
+            <xs:enumeration value="Flatbed, HazMat" id="FZ_legacy_equipment_type_code"/>
+            <xs:enumeration value="Flatbed, Hotshot" id="FH_legacy_equipment_type_code"/>
+            <xs:enumeration value="Flatbed, Maxi" id="MX_legacy_equipment_type_code"/>
+            <xs:enumeration value="Flatbed w/Sides" id="FS_legacy_equipment_type_code"/>
+            <xs:enumeration value="Flatbed w/Tarps" id="FT_legacy_equipment_type_code"/>
+            <xs:enumeration value="Flatbed w/Team" id="FM_legacy_equipment_type_code"/>
+            <xs:enumeration value="Flatbed or Step Deck" id="FD_legacy_equipment_type_code"/>
+            <xs:enumeration value="Flatbed/Van/Reefer" id="FR_legacy_equipment_type_code"/>
+            <xs:enumeration value="Hopper Bottom" id="HB_legacy_equipment_type_code"/>
+            <xs:enumeration value="Lowboy" id="LB_legacy_equipment_type_code"/>
+            <xs:enumeration value="Moving Van" id="MV_legacy_equipment_type_code"/>
+            <xs:enumeration value="Pneumatic" id="NU_legacy_equipment_type_code"/>
+            <xs:enumeration value="Power Only" id="PO_legacy_equipment_type_code"/>
+            <xs:enumeration value="Reefer" id="R_legacy_equipment_type_code"/>
+            <xs:enumeration value="Reefer, Air-Ride" id="RA_legacy_equipment_type_code"/>
+            <xs:enumeration value="Reefer, Double" id="R2_legacy_equipment_type_code"/>
+            <xs:enumeration value="Reefer, HazMat" id="RZ_legacy_equipment_type_code"/>
+            <xs:enumeration value="Reefer, Intermodal" id="RN_legacy_equipment_type_code"/>
+            <xs:enumeration value="Reefer, Logistics" id="RL_legacy_equipment_type_code"/>
+            <xs:enumeration value="Reefer w/Team" id="RM_legacy_equipment_type_code"/>
+            <xs:enumeration value="Removable Gooseneck" id="RG_legacy_equipment_type_code"/>
+            <xs:enumeration value="Step Deck" id="SD_legacy_equipment_type_code"/>
+            <xs:enumeration value="Stretch Trailer" id="ST_legacy_equipment_type_code"/>
+            <xs:enumeration value="Tanker, Aluminum" id="TA_legacy_equipment_type_code"/>
+            <xs:enumeration value="Tanker, Intermodal" id="TN_legacy_equipment_type_code"/>
+            <xs:enumeration value="Tanker, Steel" id="TS_legacy_equipment_type_code"/>
+            <xs:enumeration value="Truck and Trailer" id="TT_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van" id="V_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van, Air-Ride" id="VA_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van, Conestoga" id="VS_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van, Curtain" id="VC_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van, Double" id="V2_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van, HazMat" id="VZ_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van, Hotshot" id="VH_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van, Insulated" id="VI_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van, Intermodal" id="VN_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van, Lift-Gate" id="VG_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van, Logistics" id="VL_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van, Open-Top" id="OT_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van, Roller Bed" id="VB_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van, Triple" id="V3_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van, Vented" id="VV_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van w/Team" id="VM_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van or Flatbed w/Tarps" id="VT_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van or Flatbed" id="VF_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van or Reefer" id="VR_legacy_equipment_type_code"/>
+            <!--  -->
+            <!-- New Types Added April 2012 -->
+            <!--  -->
+            <xs:enumeration value="Insulated Van or Reefer" id="IR_legacy_equipment_type_code"/>
+            <xs:enumeration value="Reefer or Vented Van" id="RV_legacy_equipment_type_code"/>
+            <xs:enumeration value="Flatbed, w/Chains" id="FC_legacy_equipment_type_code"/>
+            <xs:enumeration value="Reefer, w/Pallet Exchange" id="RP_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van, w/Blanket Wrap" id="VW_legacy_equipment_type_code"/>
+            <xs:enumeration value="Lowboy or RGN" id="LR_legacy_equipment_type_code"/>
+            <xs:enumeration value="Van, w/Pallet Exchange" id="VP_legacy_equipment_type_code"/>
+            <xs:enumeration value="Step Deck or RGN" id="SR_legacy_equipment_type_code"/>  
+            <xs:enumeration value="Conveyor" id="CV_legacy_equipment_type_code"/>
+            <xs:enumeration value="Flatbed, Over Dimension" id="FO_legacy_equipment_type_code"/>
+            <xs:enumeration value="Lowboy, Over Dimension" id="LO_legacy_equipment_type_code"/>
+            <xs:enumeration value="Conestoga" id="CN_legacy_equipment_type_code"/>
+            <xs:enumeration value="Flatbed Conestoga" id="FN_legacy_equipment_type_code"/>
+            <xs:enumeration value="Stepdeck Conestoga" id="SN_legacy_equipment_type_code"/>
+            <xs:enumeration value="Straight Box Truck" id="SB_legacy_equipment_type_code"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="EquipmentTypeCode">
+        <xs:annotation>
+            <xs:documentation>
+                Legacy/shorthand code for equipment types.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String2"/>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <!--                      Name-values, range rules, relational rules, etc.                        -->
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="NameValuePair">
+        <xs:annotation>
+            <xs:documentation>
+                Standard name-value pair used for properties, attributes, etc.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="name" type="types:String512"/>
+            <xs:element name="value" type="types:String8192"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="NameSearchPattern">
+        <xs:annotation>
+            <xs:documentation>
+                A very limited regular expression syntax.<br/>
+                Allows any character(s) and an optional trailing wildcard, '*'. If a trailing wildcard
+                is found, the leading characters are considered a prefix and any name that begins with 
+                these characters is returned.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="types:String512">
+            <xs:pattern value=".+[*]?"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="RangeRule">
+        <xs:annotation>
+            <xs:documentation>
+                Express a range value rule.
+                <ul>
+                    <li>
+                        <em>variable</em> must be between <em>min</em> and <em>max</em>.</li>
+                    <li>
+                        <em>minInclusive</em> and <em>maxInclusive</em> specify whether the ends of the range are open or closed.</li>
+                </ul>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="variable" type="types:String512"/>
+            <xs:element name="min" type="types:String1024"/>
+            <xs:element name="minInclusive" type="xs:boolean" minOccurs="0"/>
+            <xs:element name="max" type="types:String1024"/>
+            <xs:element name="maxInclusive" type="xs:boolean" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="RelationalRule">
+        <xs:annotation>
+            <xs:documentation>
+                Express a relational rule.<br/>
+                <em>variable</em> must be related to <em>value</em> through the use of <em>operator</em>..
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="variable" type="types:String512"/>
+            <xs:element name="value" type="types:String1024"/>
+            <xs:element name="operator">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="ne"/>
+                        <xs:enumeration value="eq"/>
+                        <xs:enumeration value="gt"/>
+                        <xs:enumeration value="gte"/>
+                        <xs:enumeration value="lt"/>
+                        <xs:enumeration value="lte"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="SetRule">
+        <xs:annotation>
+            <xs:documentation>
+                Expresses a set membership rule.<br/>
+                <em>variable</em> must be one of the <em>value</em>s.<br/>
+                <b>NOTE: </b> it is possible to have an empty value set.<br/>
+                <br/>
+                    Applications can interpret empty value sets as they please, but usually the result is either:
+                        <ol>
+                    <li>always <em>false</em> (i.e., "value" can never be a member of an empty set, or</li>
+                    <li>
+                        <em>true'</em> if "value" is has no value (is undefined), or if "value" is a string, it is empty.</li>
+                </ol>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="variable" type="types:String512"/>
+            <xs:element name="values" type="types:String1024" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="NonNegativeInt">
+        <xs:annotation>
+            <xs:documentation>
+                Represents a non-negative 32-bit int. Used often for Ids.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:int">
+            <xs:minInclusive value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="PositiveInt">
+        <xs:annotation>
+            <xs:documentation>
+                Represents a positive 32-bit int.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:int">
+            <xs:minInclusive value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="SessionToken">
+        <xs:sequence>
+            <xs:element name="primary" type="xs:base64Binary"/>
+            <xs:element name="secondary" type="xs:base64Binary"/>
+            <xs:element name="expiration" type="types:UTC" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->          
+    <xs:complexType name="CapabilityIds">
+        <xs:sequence>
+            <xs:element name="ids" type="types:CapabilityId" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="CapabilityId"><xs:restriction base="types:String256"/></xs:simpleType>
+
+    <xs:complexType name="Points">
+        <xs:annotation>
+            <xs:documentation>
+                Encapsulation of a collection of Point.  Typically used to allow
+                convenient data transfer or persistence as XML text (especially the
+                export of the geoascii.dat and all_points.xml files to clients).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="source" type="types:String30"/>
+            <xs:element name="created" type="types:UTC"/>
+            <xs:element name="points" type="types:Point" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="points" type="types:Points"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LookedUpPoint">
+        <xs:annotation>
+            <xs:documentation>
+                When a point is looked up by a service, the requestor typically
+                wants to know how the point was found.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="point" type="types:Point"/>
+            <xs:element name="howFound" type="types:PointsLookupMethod"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="lookedUpPoint" type="types:LookedUpPoint"/> 
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="PointsLookupMethod">
+        <xs:annotation>
+            <xs:documentation>
+                Descriptor of how points were looked up.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Exact">
+                <xs:annotation>
+                    <xs:documentation>
+                        Exact match (lower cased) with the supplied criteria.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="StartsWith">
+                <xs:annotation>
+                    <xs:documentation>
+                        No exact matches found.
+                        Matching points' names start (lower cased) with the supplied criteria.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="Normalized">
+                <xs:annotation>
+                    <xs:documentation>
+                        No exact or starts-with matches found.
+                        Matching points' names match (lower cased) with the supplied criteria
+                        after CSB/SB2 standard rules of abbreviation, punctuation, and 
+                        spacing have been applied to the criteria.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="Suggestions">
+                <xs:annotation>
+                    <xs:documentation>
+                        No exact, starts-with, or normalized matches found.
+                        Matching points' names are suggestions based on assumption that
+                        supplied criteria is a misspelling.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <!--                         Standard String types to enforce length/typing                       -->
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="NonEmptyString">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="NonEmptySafeString">
+        <xs:restriction base="types:NonEmptyString">
+            <xs:maxLength value="1048576"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String1">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String2">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="2"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String3">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="3"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String4">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="4"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String5">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="5"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String6">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="6"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String7">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="7"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String8">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="8"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String9">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="9"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String10">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="10"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String12">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="12"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String14">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="14"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String15">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="15"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String16">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="16"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String20">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="20"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String23">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="23"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String25">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="25"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String30">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="30"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="NonEmptyString30">
+        <xs:restriction base="types:NonEmptyString">
+            <xs:maxLength value="30"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String31">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="31"/>
+        </xs:restriction>
+    </xs:simpleType>
+   <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String35">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="35"/>
+        </xs:restriction>
+    </xs:simpleType>
+     <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String32">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="32"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String40">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="40"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String50">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="50"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String55">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="55"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- --> 
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String60">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="60"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String64">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="64"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String70">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="70"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String90">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="90"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String100">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="100"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String110">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="110"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String128">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="128"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String150">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="150"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String155">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="155"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String200">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="200"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String250">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="255"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String255">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="255"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String256">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="256"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="NonEmptyString256">
+        <xs:restriction base="types:NonEmptyString">
+            <xs:maxLength value="256"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String500">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="500"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String512">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="512"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String1024">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="1024"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="NonEmptyString1024">
+        <xs:restriction base="types:NonEmptyString">
+            <xs:maxLength value="1024"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String2048">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="2048"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="String8192">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="0"/>
+            <xs:maxLength value="8192"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="LatLongLocation">
+        <xs:annotation>
+            <xs:documentation>
+                 A <em>LatLongLocation</em> is a place specified only by latitude and longitude coordinates.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="latitude" type="types:Latitude"/>
+            <xs:element name="longitude" type="types:Longitude"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <!-- The following are just to assist .NET in parsing schema.  They are not used by CSB.          -->
+    <!-- -->
+    <!-- -->
+    <!-- ============================================================================================ -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="CompanyTypeUsage">
+        <xs:sequence>
+            <xs:element name="usage" type="types:CompanyType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="DirectionUsage">
+        <xs:sequence>
+            <xs:element name="usage" type="types:Direction"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="CreditCardTypeUsage">
+        <xs:sequence>
+            <xs:element name="usage" type="types:CreditCardType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="EquipmentCategoryUsage">
+        <xs:sequence>
+            <xs:element name="usage" type="types:EquipmentCategory"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="EquipmentClassUsage">
+        <xs:sequence>
+            <xs:element name="usage" type="types:EquipmentClass"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="EquipmentTypeUsage">
+        <xs:sequence>
+            <xs:element name="usage" type="types:EquipmentType"/>
+        </xs:sequence>
+    </xs:complexType> 
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="AssetTypeUsage">
+        <xs:sequence>
+            <xs:element name="usage" type="types:AssetType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+</xs:schema>

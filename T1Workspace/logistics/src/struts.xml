@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <constant name="struts.devMode" value="true " />
+   <constant name="struts.multipart.maxSize" value="1000000" />
+
+   <package name="helloworld" extends="struts-default">
+	   <action name="uploadFirstFile" class="com.tutorialspoint.struts2.action.uploadFile">
+	       <result name="success">success.jsp</result>
+	       <result name="error">error.jsp</result>
+	   </action>
+	    <action name="uploadSecondFile" class="com.tutorialspoint.struts2.action.UploadSecondFile">
+	       <result name="success" >success1.jsp</result>
+	       <result name="error">error.jsp</result>
+	   </action>
+	    <action name="frm" class="com.tutorialspoint.struts2.action.uploadFile" method="insertJoinTable">
+	       <result name="success">index1.jsp</result>
+	       <result name="error">error.jsp</result>
+	   </action>
+	    <action name="uploadFile" class="com.tutorialspoint.struts2.action.uploadFile" method="original">
+	       <result name="success">index.jsp</result>
+	       <result name="error">error.jsp</result>
+	   </action>
+		
+<!-- 		<action name="LoginView" class="com.org.action.GetUpdateTableAction" method="advertisersCategory1">
+			<result name="success">index1.jsp</result>
+	       <result name="error">error.jsp</result>
+		</action> -->
+		
+		<action name="index">
+	       <result name="success">inter.jsp</result>
+	       <result name="error">error.jsp</result>
+	   </action>
+	   
+	   <action name="home">
+	       <result name="success">index.jsp</result>
+	       <result name="error">error.jsp</result>
+	   </action>
+	   
+	   <action name="loginSuccess">
+	       <result name="success">template.jsp</result>
+	       <result name="error">error.jsp</result>
+	   </action>
+	   
+	   
+   </package>
+	<package name="default" extends="json-default" namespace="/">
+		<interceptors>
+			<interceptor-stack name="defaultStack">
+				<interceptor-ref name="json">
+					<param name="enableSMD">true</param>
+				</interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="defaultStack" />
+<!--    		<action name="readStates" class="com.org.action.GetTableAction" method="advertisersCategory">
+			<result type="json"></result>
+		</action> -->
+ 		<action name="LoginView" class="com.org.scube.dashboard.controller.LoginView" method="UserLoginView">
+			<result type="json"></result>
+		</action>
+		<action name="LoginViewForgetPassword" class="com.org.scube.dashboard.controller.LoginView" method="ForgetPassword">
+			<result type="json"></result>
+		</action>
+		<action name="LoginViewForgetPasswordEmail" class="com.org.scube.dashboard.controller.LoginView" method="ForgetPasswordEmail">
+			<result type="json"></result>
+		</action>
+ 		<action name="AdminManageAllUser" class="com.org.scube.dashboard.controller.AdminUserManageView" method="AddNewUser">
+			<result type="json"></result>
+		</action>
+		<action name="SelectSecondFileData" class="com.org.scube.dashboard.controller.AdminUserManageView" method="SelectData">
+			<result type="json"></result>
+		</action>
+		<action name="SelectData" class="com.org.scube.dashboard.controller.AdminUserManageView" method="getSeleteData">
+			<result type="json"></result>
+		</action>
+		<action name="ReportController" class="com.org.action.GetUpdateTableAction" method="advertisersCategory1">
+			<result type="json"></result>
+		</action>
+		
+		<action name="readStatesNew" class="com.org.action.GetUpdateTableAction" method="test">
+			<result type="json"></result>
+		</action>
+		<action name="readStatesNew1" class="com.org.action.GetUpdateTableAction" method="title">
+			<result type="json"></result>
+		</action>
+		
+		<!-- <action name="LoginView" class="com.org.scube.dashboard.controller.LoginView" method="advertisersCategory">
+			<result type="json"></result>
+		</action> -->
+	</package>
+</struts>

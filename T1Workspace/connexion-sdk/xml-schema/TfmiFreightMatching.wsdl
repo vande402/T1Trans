@@ -1,0 +1,753 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:tfmi="http://www.tcore.com/TfmiFreightMatching.xsd"
+                  xmlns:dobtypes="http://www.tcore.com/TcoreDobTypes.xsd"
+                  xmlns:tfmiwsdl="http://www.tcore.com/TfmiFreightMatching.wsdl"
+                  xmlns:tfmirates="http://www.tcore.com/TfmiRates.xsd"
+                  xmlns:types="http://www.tcore.com/TcoreTypes.xsd"
+                  xmlns:headers="http://www.tcore.com/TcoreHeaders.xsd"
+                  xmlns:message="http://www.tcore.com/TcoreMessage.xsd"
+                  xmlns:cwtypes="http://www.tcore.com/TcoreCarrierWatchTypes.xsd"
+                  targetNamespace="http://www.tcore.com/TfmiFreightMatching.wsdl">
+   <wsdl:types>
+      <xs:schema>
+         <xs:import namespace="http://www.tcore.com/TfmiFreightMatching.xsd"
+                    schemaLocation="TfmiFreightMatching.xsd"/>
+         <xs:import namespace="http://www.tcore.com/TfmiRates.xsd" schemaLocation="TfmiRates.xsd"/>
+         <xs:import namespace="http://www.tcore.com/TcoreHeaders.xsd"
+                    schemaLocation="TcoreHeaders.xsd"/>
+      </xs:schema>
+   </wsdl:types>
+   <wsdl:message name="applicationHeader">
+      <wsdl:part name="applicationHeader" element="headers:applicationHeader"/>
+   </wsdl:message>
+   <wsdl:message name="correlationHeader">
+      <wsdl:part name="correlationHeader" element="headers:correlationHeader"/>
+   </wsdl:message>
+   <wsdl:message name="sessionHeader">
+      <wsdl:part name="sessionHeader" element="headers:sessionHeader"/>
+   </wsdl:message>
+   <wsdl:message name="warningHeader">
+      <wsdl:part name="warningHeader" element="headers:warningHeader"/>
+   </wsdl:message>
+   <wsdl:message name="versionHeader">
+      <wsdl:part name="versionHeader" element="headers:versionHeader"/>
+   </wsdl:message>
+   <wsdl:message name="loginRequest">
+      <wsdl:part name="request" element="tfmi:loginRequest"/>
+   </wsdl:message>
+   <wsdl:message name="loginResponse">
+      <wsdl:part name="response" element="tfmi:loginResponse"/>
+   </wsdl:message>
+   <wsdl:message name="postAssetRequest">
+      <wsdl:part name="request" element="tfmi:postAssetRequest"/>
+   </wsdl:message>
+   <wsdl:message name="postAssetResponse">
+      <wsdl:part name="response" element="tfmi:postAssetResponse"/>
+   </wsdl:message>
+   <wsdl:message name="updateAssetRequest">
+      <wsdl:part name="request" element="tfmi:updateAssetRequest"/>
+   </wsdl:message>
+   <wsdl:message name="updateAssetResponse">
+      <wsdl:part name="response" element="tfmi:updateAssetResponse"/>
+   </wsdl:message>
+   <wsdl:message name="deleteAssetRequest">
+      <wsdl:part name="request" element="tfmi:deleteAssetRequest"/>
+   </wsdl:message>
+   <wsdl:message name="deleteAssetResponse">
+      <wsdl:part name="response" element="tfmi:deleteAssetResponse"/>
+   </wsdl:message>
+   <wsdl:message name="lookupAssetRequest">
+      <wsdl:part name="request" element="tfmi:lookupAssetRequest"/>
+   </wsdl:message>
+   <wsdl:message name="lookupAssetResponse">
+      <wsdl:part name="response" element="tfmi:lookupAssetResponse"/>
+   </wsdl:message>
+   <wsdl:message name="lookupAlarmRequest">
+      <wsdl:part name="request" element="tfmi:lookupAlarmRequest"/>
+   </wsdl:message>
+   <wsdl:message name="lookupAlarmResponse">
+      <wsdl:part name="response" element="tfmi:lookupAlarmResponse"/>
+   </wsdl:message>
+   <wsdl:message name="createAlarmRequest">
+      <wsdl:part name="request" element="tfmi:createAlarmRequest"/>
+   </wsdl:message>
+   <wsdl:message name="createAlarmResponse">
+      <wsdl:part name="response" element="tfmi:createAlarmResponse"/>
+   </wsdl:message>
+   <wsdl:message name="updateAlarmRequest">
+      <wsdl:part name="request" element="tfmi:updateAlarmRequest"/>
+   </wsdl:message>
+   <wsdl:message name="updateAlarmResponse">
+      <wsdl:part name="response" element="tfmi:updateAlarmResponse"/>
+   </wsdl:message>
+   <wsdl:message name="deleteAlarmRequest">
+      <wsdl:part name="request" element="tfmi:deleteAlarmRequest"/>
+   </wsdl:message>
+   <wsdl:message name="deleteAlarmResponse">
+      <wsdl:part name="response" element="tfmi:deleteAlarmResponse"/>
+   </wsdl:message>
+   <wsdl:message name="createSearchRequest">
+      <wsdl:part name="request" element="tfmi:createSearchRequest"/>
+   </wsdl:message>
+   <wsdl:message name="createSearchResponse">
+      <wsdl:part name="response" element="tfmi:createSearchResponse"/>
+   </wsdl:message>
+   <wsdl:message name="lookupSearchRequest">
+      <wsdl:part name="request" element="tfmi:lookupSearchRequest"/>
+   </wsdl:message>
+   <wsdl:message name="lookupSearchResponse">
+      <wsdl:part name="response" element="tfmi:lookupSearchResponse"/>
+   </wsdl:message>
+   <wsdl:message name="lookupSearchMatchesRequest">
+      <wsdl:part name="request" element="tfmi:lookupSearchMatchesRequest"/>
+   </wsdl:message>
+   <wsdl:message name="lookupSearchMatchesResponse">
+      <wsdl:part name="response" element="tfmi:lookupSearchMatchesResponse"/>
+   </wsdl:message>
+   <wsdl:message name="countAssetsRequest">
+      <wsdl:part name="request" element="tfmi:countAssetsRequest"/>
+   </wsdl:message>
+   <wsdl:message name="countAssetsResponse">
+      <wsdl:part name="response" element="tfmi:countAssetsResponse"/>
+   </wsdl:message>
+   <wsdl:message name="deleteSearchRequest">
+      <wsdl:part name="request" element="tfmi:deleteSearchRequest"/>
+   </wsdl:message>
+   <wsdl:message name="deleteSearchResponse">
+      <wsdl:part name="response" element="tfmi:deleteSearchResponse"/>
+   </wsdl:message>
+   <wsdl:message name="lookupAlarmUrlRequest">
+      <wsdl:part name="request" element="tfmi:lookupAlarmUrlRequest"/>
+   </wsdl:message>
+   <wsdl:message name="lookupAlarmUrlResponse">
+      <wsdl:part name="response" element="tfmi:lookupAlarmUrlResponse"/>
+   </wsdl:message>
+   <wsdl:message name="updateAlarmUrlRequest">
+      <wsdl:part name="request" element="tfmi:updateAlarmUrlRequest"/>
+   </wsdl:message>
+   <wsdl:message name="updateAlarmUrlResponse">
+      <wsdl:part name="response" element="tfmi:updateAlarmUrlResponse"/>
+   </wsdl:message>
+   <wsdl:message name="lookupCarrierRequest">
+      <wsdl:part name="request" element="tfmi:lookupCarrierRequest"/>
+   </wsdl:message>
+   <wsdl:message name="lookupCarrierResponse">
+      <wsdl:part name="response" element="tfmi:lookupCarrierResponse"/>
+   </wsdl:message>
+   <wsdl:message name="monitorInsuranceRequest">
+      <wsdl:part name="request" element="tfmi:monitorInsuranceRequest"/>
+   </wsdl:message>
+   <wsdl:message name="monitorInsuranceResponse">
+      <wsdl:part name="response" element="tfmi:monitorInsuranceResponse"/>
+   </wsdl:message>
+   <wsdl:message name="createCarrierRequest">
+      <wsdl:part name="request" element="tfmi:createCarrierRequest"/>
+   </wsdl:message>
+   <wsdl:message name="createCarrierResponse">
+      <wsdl:part name="response" element="tfmi:createCarrierResponse"/>
+   </wsdl:message>
+   <wsdl:message name="lookupDobSignedCarriersRequest">
+      <wsdl:part name="request" element="tfmi:lookupDobSignedCarriersRequest"/>
+   </wsdl:message>
+   <wsdl:message name="lookupDobSignedCarriersResponse">
+      <wsdl:part name="response" element="tfmi:lookupDobSignedCarriersResponse"/>
+   </wsdl:message>
+   <wsdl:message name="lookupDobCarriersRequest">
+      <wsdl:part name="request" element="tfmi:lookupDobCarriersRequest"/>
+   </wsdl:message>
+   <wsdl:message name="lookupDobCarriersResponse">
+      <wsdl:part name="response" element="tfmi:lookupDobCarriersResponse"/>
+   </wsdl:message>
+   <wsdl:message name="lookupDobEventsRequest">
+      <wsdl:part name="request" element="tfmi:lookupDobEventsRequest"/>
+   </wsdl:message>
+   <wsdl:message name="lookupDobEventsResponse">
+      <wsdl:part name="response" element="tfmi:lookupDobEventsResponse"/>
+   </wsdl:message>
+   <wsdl:message name="lookupCapabilitiesRequest">
+      <wsdl:part name="request" element="tfmi:lookupCapabilitiesRequest"/>
+   </wsdl:message>
+   <wsdl:message name="lookupCapabilitiesResponse">
+      <wsdl:part name="response" element="tfmi:lookupCapabilitiesResponse"/>
+   </wsdl:message>
+   <wsdl:message name="lookupRateRequest">
+      <wsdl:part name="request" element="tfmirates:lookupRateRequest"/>
+   </wsdl:message>
+   <wsdl:message name="lookupRateResponse">
+      <wsdl:part name="response" element="tfmirates:lookupRateResponse"/>
+   </wsdl:message>
+   <wsdl:message name="lookupHistoricSpotRatesRequest">
+      <wsdl:part name="request" element="tfmirates:lookupHistoricSpotRatesRequest"/>
+   </wsdl:message>
+   <wsdl:message name="lookupHistoricSpotRatesResponse">
+      <wsdl:part name="response" element="tfmirates:lookupHistoricSpotRatesResponse"/>
+   </wsdl:message>
+   <wsdl:message name="lookupHistoricContractRatesRequest">
+      <wsdl:part name="request" element="tfmirates:lookupHistoricContractRatesRequest"/>
+   </wsdl:message>
+   <wsdl:message name="lookupHistoricContractRatesResponse">
+      <wsdl:part name="response" element="tfmirates:lookupHistoricContractRatesResponse"/>
+   </wsdl:message>
+   <wsdl:message name="lookupDoeFuelPricesRequest">
+      <wsdl:part name="request" element="tfmirates:lookupDoeFuelPricesRequest"/>
+   </wsdl:message>
+   <wsdl:message name="lookupDoeFuelPricesResponse">
+      <wsdl:part name="response" element="tfmirates:lookupDoeFuelPricesResponse"/>
+   </wsdl:message>
+   <wsdl:portType name="TfmiFreightMatchingPortType">
+      <wsdl:operation name="Login">
+         <wsdl:input message="tfmiwsdl:loginRequest"/>
+         <wsdl:output message="tfmiwsdl:loginResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="PostAsset">
+         <wsdl:input message="tfmiwsdl:postAssetRequest"/>
+         <wsdl:output message="tfmiwsdl:postAssetResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="UpdateAsset">
+         <wsdl:input message="tfmiwsdl:updateAssetRequest"/>
+         <wsdl:output message="tfmiwsdl:updateAssetResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="DeleteAsset">
+         <wsdl:input message="tfmiwsdl:deleteAssetRequest"/>
+         <wsdl:output message="tfmiwsdl:deleteAssetResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="LookupAsset">
+         <wsdl:input message="tfmiwsdl:lookupAssetRequest"/>
+         <wsdl:output message="tfmiwsdl:lookupAssetResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="LookupAlarm">
+         <wsdl:input message="tfmiwsdl:lookupAlarmRequest"/>
+         <wsdl:output message="tfmiwsdl:lookupAlarmResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="CreateAlarm">
+         <wsdl:input message="tfmiwsdl:createAlarmRequest"/>
+         <wsdl:output message="tfmiwsdl:createAlarmResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="UpdateAlarm">
+         <wsdl:input message="tfmiwsdl:updateAlarmRequest"/>
+         <wsdl:output message="tfmiwsdl:updateAlarmResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="DeleteAlarm">
+         <wsdl:input message="tfmiwsdl:deleteAlarmRequest"/>
+         <wsdl:output message="tfmiwsdl:deleteAlarmResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="CreateSearch">
+         <wsdl:input message="tfmiwsdl:createSearchRequest"/>
+         <wsdl:output message="tfmiwsdl:createSearchResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="LookupSearch">
+         <wsdl:input message="tfmiwsdl:lookupSearchRequest"/>
+         <wsdl:output message="tfmiwsdl:lookupSearchResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="LookupSearchMatches">
+         <wsdl:input message="tfmiwsdl:lookupSearchMatchesRequest"/>
+         <wsdl:output message="tfmiwsdl:lookupSearchMatchesResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="CountAssets">
+         <wsdl:input message="tfmiwsdl:countAssetsRequest"/>
+         <wsdl:output message="tfmiwsdl:countAssetsResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="DeleteSearch">
+         <wsdl:input message="tfmiwsdl:deleteSearchRequest"/>
+         <wsdl:output message="tfmiwsdl:deleteSearchResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="LookupAlarmUrl">
+         <wsdl:input message="tfmiwsdl:lookupAlarmUrlRequest"/>
+         <wsdl:output message="tfmiwsdl:lookupAlarmUrlResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="UpdateAlarmUrl">
+         <wsdl:input message="tfmiwsdl:updateAlarmUrlRequest"/>
+         <wsdl:output message="tfmiwsdl:updateAlarmUrlResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="LookupCarrier">
+         <wsdl:input message="tfmiwsdl:lookupCarrierRequest"/>
+         <wsdl:output message="tfmiwsdl:lookupCarrierResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="MonitorInsurance">
+         <wsdl:input message="tfmiwsdl:monitorInsuranceRequest"/>
+         <wsdl:output message="tfmiwsdl:monitorInsuranceResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="CreateCarrier">
+         <wsdl:input message="tfmiwsdl:createCarrierRequest"/>
+         <wsdl:output message="tfmiwsdl:createCarrierResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="LookupDobSignedCarriers">
+         <wsdl:input message="tfmiwsdl:lookupDobSignedCarriersRequest"/>
+         <wsdl:output message="tfmiwsdl:lookupDobSignedCarriersResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="LookupDobCarriers">
+         <wsdl:input message="tfmiwsdl:lookupDobCarriersRequest"/>
+         <wsdl:output message="tfmiwsdl:lookupDobCarriersResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="lookupDobEvents">
+         <wsdl:input message="tfmiwsdl:lookupDobEventsRequest"/>
+         <wsdl:output message="tfmiwsdl:lookupDobEventsResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="LookupCapabilities">
+         <wsdl:input message="tfmiwsdl:lookupCapabilitiesRequest"/>
+         <wsdl:output message="tfmiwsdl:lookupCapabilitiesResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="LookupRate">
+         <wsdl:input message="tfmiwsdl:lookupRateRequest"/>
+         <wsdl:output message="tfmiwsdl:lookupRateResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="LookupHistoricSpotRates">
+         <wsdl:input message="tfmiwsdl:lookupHistoricSpotRatesRequest"/>
+         <wsdl:output message="tfmiwsdl:lookupHistoricSpotRatesResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="LookupHistoricContractRates">
+         <wsdl:input message="tfmiwsdl:lookupHistoricContractRatesRequest"/>
+         <wsdl:output message="tfmiwsdl:lookupHistoricContractRatesResponse"/>
+      </wsdl:operation>
+      <wsdl:operation name="LookupDoeFuelPrices">
+         <wsdl:input message="tfmiwsdl:lookupDoeFuelPricesRequest"/>
+         <wsdl:output message="tfmiwsdl:lookupDoeFuelPricesResponse"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:binding name="TfmiFreightMatchingSoapBinding"
+                 type="tfmiwsdl:TfmiFreightMatchingPortType">
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="Login">
+         <soap:operation soapAction="/Login" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="PostAsset">
+         <soap:operation soapAction="/PostAsset" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="UpdateAsset">
+         <soap:operation soapAction="/UpdateAsset" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="DeleteAsset">
+         <soap:operation soapAction="/DeleteAsset" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="LookupAsset">
+         <soap:operation soapAction="/LookupAsset" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="LookupAlarm">
+         <soap:operation soapAction="/LookupAlarm" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="CreateAlarm">
+         <soap:operation soapAction="/CreateAlarm" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="UpdateAlarm">
+         <soap:operation soapAction="/UpdateAlarm" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="DeleteAlarm">
+         <soap:operation soapAction="/DeleteAlarm" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="CreateSearch">
+         <soap:operation soapAction="/CreateSearch" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="LookupSearch">
+         <soap:operation soapAction="/LookupSearch" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="LookupSearchMatches">
+         <soap:operation soapAction="/LookupSearchMatches" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="CountAssets">
+         <soap:operation soapAction="/CountAssets" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="DeleteSearch">
+         <soap:operation soapAction="/DeleteSearch" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="LookupAlarmUrl">
+         <soap:operation soapAction="/LookupAlarmUrl" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="UpdateAlarmUrl">
+         <soap:operation soapAction="/UpdateAlarmUrl" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="LookupCarrier">
+         <soap:operation soapAction="/LookupCarrier" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="MonitorInsurance">
+         <soap:operation soapAction="/MonitorInsurance" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="CreateCarrier">
+         <soap:operation soapAction="/CreateCarrier" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="LookupDobSignedCarriers">
+         <soap:operation soapAction="/LookupDobSignedCarriers" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="LookupDobCarriers">
+         <soap:operation soapAction="/LookupDobCarriers" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="lookupDobEvents">
+         <soap:operation soapAction="/lookupDobEvents" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="LookupCapabilities">
+         <soap:operation soapAction="/LookupCapabilities" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="LookupRate">
+         <soap:operation soapAction="/LookupRate" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="LookupHistoricSpotRates">
+         <soap:operation soapAction="/LookupHistoricSpotRates" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="LookupHistoricContractRates">
+         <soap:operation soapAction="/LookupHistoricContractRates" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="LookupDoeFuelPrices">
+         <soap:operation soapAction="/LookupDoeFuelPrices" style="document"/>
+         <wsdl:input>
+            <soap:header message="tfmiwsdl:applicationHeader" part="applicationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output>
+            <soap:header message="tfmiwsdl:sessionHeader" part="sessionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:correlationHeader" part="correlationHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:versionHeader" part="versionHeader" use="literal"/>
+            <soap:header message="tfmiwsdl:warningHeader" part="warningHeader" use="literal"/>
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   <wsdl:service name="TfmiFreightMatchingService">
+      <wsdl:port name="TfmiFreightMatchingService"
+                 binding="tfmiwsdl:TfmiFreightMatchingSoapBinding">
+         <soap:address location="http://208.64.206.159:9280/TfmiRequest"/>
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>

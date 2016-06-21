@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: TfmiFreightMatching.xsd 4922 2006-08-11 18:33:00 +0000 (Fri, 11 Aug 2006) aarond $ -->
+<!-- Best viewed with fixed-width (e.g., Courier) font -->
+<xs:schema 
+    targetNamespace="http://www.tcore.com/TfmiAlarmMatch.xsd"
+    elementFormDefault="qualified" 
+    xmlns:tfmialarm="http://www.tcore.com/TfmiAlarmMatch.xsd" 
+    xmlns:tfmi="http://www.tcore.com/TfmiFreightMatching.xsd" 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <!-- Thus far, we aren't implementing AlarmCreationNotification or AlarmUpdateNotification.
+         Presumably, a user will know when they create or update alarms, and since we're not 
+         (yet) supporting groups, there isn't anyone to notify of alarm activity other than 
+         matches or termination -->
+    
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:import namespace="http://www.tcore.com/TfmiFreightMatching.xsd" schemaLocation="TfmiFreightMatching.xsd"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="AlarmNotification" abstract="true"/>
+    <!-- -->
+    <xs:element name="alarmNotification" type="tfmialarm:AlarmNotification"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="AlarmMatchNotification">
+        <xs:annotation>
+            <xs:documentation>
+                Notification that an asset satisfying an alarm has been found.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tfmialarm:AlarmNotification">
+                <xs:sequence>
+                    <xs:element name="alarmId" type="tfmialarm:AlarmId">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The ID of the alarm that found the matching asset.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="basisAssetId" type="tfmi:AssetId">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The ID of the posted asset from which this alarm match's search 
+                                criteria was generated.  By including this in the response, it
+                                potentially saves the receiver an AlarmLookupRequest (if the 
+                                requester isn't keeping its own private correlations).<br/>
+                                <br/>
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="basisAssetPostersReferenceId" type="tfmi:ReferenceId" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The poster-supplied reference ID of the basis asset (see
+                                "basisAssetId", above). By including this in the response, it 
+                                potentially saves the receiver an AlarmLookupRequest (if the 
+                                requester isn't keeping its own private correlations).<br/>
+                                <br/>
+                                If the poster did not supply a reference ID, then this item is 
+                                omitted.<br/>
+                                <br/>
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="cancelled" type="xs:boolean">
+                        <xs:annotation>
+                            <xs:documentation>
+                                True if the matching posting has been canceled. This allows the 
+                                alarm's owner to know about leads (assets) that it may or may not 
+                                have presented to a requester, that have been subsequently
+                                canceled and are no longer available.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="match" type="tfmi:MatchingAsset">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Asset that matches the supplied search criteria.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="alarmMatchNotification" type="tfmialarm:AlarmMatchNotification" substitutionGroup="tfmialarm:alarmNotification"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="AlarmTerminationNotification">
+        <xs:annotation>
+            <xs:documentation>
+                Notification that an alarm has been terminated.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tfmialarm:AlarmNotification">
+                <xs:sequence>
+                    <xs:element name="alarmId" type="tfmialarm:AlarmId">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The ID of the alarm that has expired.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="reason">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Why the alarm has terminated.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="BasisCancelled"/>
+                                <xs:enumeration value="BasisExpired"/>
+                                <xs:enumeration value="AlarmCancelled"/>
+                                <xs:enumeration value="AlarmExpired"/>
+                                <xs:enumeration value="AlarmFulfilled"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="basisAssetId" type="tfmi:AssetId">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The ID of the posted asset on which this alarm is based.<br/>
+                                <br/>
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="alarmTerminationNotification" type="tfmialarm:AlarmTerminationNotification" substitutionGroup="tfmialarm:alarmNotification"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:complexType name="AlarmResponse">
+        <xs:annotation>
+            <xs:documentation>
+                Acknowledges receipt of an Alarm Notification (AlarmMatchNotification, 
+                AlarmTerminationNotification, etc.)
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence/>
+    </xs:complexType>
+    <!-- -->
+    <xs:element name="alarmResponse" type="tfmialarm:AlarmResponse"/>
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <!-- -->
+    <xs:simpleType name="AlarmId">
+        <xs:annotation>
+            <xs:documentation>
+                The Freight Matching Service assigns historically unique IDs to all assets.
+                This is the primary key by which assets are accessed (although the poster-supplied 
+                reference ID can also be used, for convenience; see "ReferenceId").
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="tfmi:FmcsId"/>
+    </xs:simpleType>
+</xs:schema>
