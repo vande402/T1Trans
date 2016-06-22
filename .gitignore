@@ -225,3 +225,4 @@ T1Workspace/.metadata/.log
 *.snap
 *.markers
 *.txt
+T1Workspace/.metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi
