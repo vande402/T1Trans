@@ -19,6 +19,7 @@ local.properties
 *.snap
 .index
 .prefs
+workbench.xmi
 
 
 # External tool builders
